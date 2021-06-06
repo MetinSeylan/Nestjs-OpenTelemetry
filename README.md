@@ -21,7 +21,7 @@ npm install --save \
   @opentelemetry/tracing \
   @opentelemetry/exporter-zipkin \
 ```
-Module should import to main nestjs module
+Module should import to main nestjs module, register method accepts <a href="https://github.com/open-telemetry/opentelemetry-js/tree/main/packages/opentelemetry-sdk-node">OpenTelemetry NodeSDK</a> configuration
 ``` typescript
 OpenTelemetryModule.register({
   spanProcessor: new BatchSpanProcessor(
