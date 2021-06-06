@@ -1,0 +1,4 @@
+export declare enum Constants {
+    SDK = "OPEN_TELEMETRY_SDK",
+    METRIC_EXPORTER = "OPEN_TELEMETRY_SDK_METRIC_EXPORTER"
+}

@@ -1,0 +1,37 @@
+{
+  "name": "nestjs_opentelemetry",
+  "version": "0.0.1",
+  "description": "opentelemetry module for nestjs",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MetinSeylan/Nestjs-OpenTelemetry.git"
+  },
+  "keywords": [
+    "nestjs",
+    "opentelemetry",
+    "tracing",
+    "observability",
+    "prometheus",
+    "zipkin",
+    "jaeger"
+  ],
+  "author": "metinsyln@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MetinSeylan/Nestjs-OpenTelemetry/issues"
+  },
+  "homepage": "https://github.com/MetinSeylan/Nestjs-OpenTelemetry#readme",
+  "dependencies": {
+    "@nestjs/common": "^7.6.17",
+    "@nestjs/core": "^7.6.17",
+    "@opentelemetry/api": "^0.20.0",
+    "@opentelemetry/sdk-node": "^0.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^15.12.1"
+  }
+}
