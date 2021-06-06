@@ -12,7 +12,7 @@ npm install @metinseylan/nestjs-opentelemetry --save
 ```
 
 #### 💾 Example Module Setup
-Dependencies can be change, depends on your setup
+According to your setup, dependencies may be different
 ``` bash
 npm install --save \
   @opentelemetry/instrumentation-http \
@@ -21,7 +21,7 @@ npm install --save \
   @opentelemetry/tracing \
   @opentelemetry/exporter-zipkin \
 ```
-Module should import to main nestjs module, register method accepts <a href="https://github.com/open-telemetry/opentelemetry-js/tree/main/packages/opentelemetry-sdk-node">OpenTelemetry NodeSDK</a> configuration
+Module should be imported to main nestjs module. Register method accepts <a href="https://github.com/open-telemetry/opentelemetry-js/tree/main/packages/opentelemetry-sdk-node">OpenTelemetry NodeSDK</a> configuration
 ``` typescript
 OpenTelemetryModule.register({
   spanProcessor: new BatchSpanProcessor(
@@ -40,7 +40,7 @@ OpenTelemetryModule.register({
 });
 ```
 #### 🧐 Logging with TraceId
-After module setup you can use LoggerService, its provide trace id with every logging like this
+After module setup you can use LoggerService, it provides trace id with every logging like this
 ``` typescript
 import { LoggerService } from '@metinseylan/nestjs-opentelemetry';
 
@@ -52,7 +52,7 @@ this.loggerService.log(
 <img src="./docs/logging.png"  alt="Logging with opentelemetry trace id"/>
 
 #### 🥫 Span Decorator
-If you need, you can define custom Tracing Span for a method, async or normal its works for both of them, Span takes name parameter but by default same as method name
+If you need, you can define a custom Tracing Span for a method. It works async or normally. Span takes its name from the parameter; but by default, it is the same as the method's name
 
 ``` typescript
 import { Span } from '@metinseylan/nestjs-opentelemetry';
@@ -63,7 +63,7 @@ async getHello() {
 }
 ```
 #### 📬 Tracing Service
-Sometimes you need to access native span methods for special logics in the method block, TraceService comes to help
+Sometimes you need to access native span methods for special logics in the method block. At that moment, Trace Service comes to help
 ``` typescript
 @Injectable()
 export class AppService {
