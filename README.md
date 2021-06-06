@@ -1,6 +1,6 @@
 <h1 align="center">NestJS OpenTelemetry</h1>
-<a href="https://www.npmjs.com/package/nestjs_opentelemetry"><img src="https://img.shields.io/npm/v/nestjs_opentelemetry.svg"/> <img src="https://img.shields.io/npm/dt/nestjs_opentelemetry.svg"/></a>
-<a href="http://packagequality.com/#?package=nestjs_opentelemetry"><img src="http://npm.packagequality.com/shield/nestjs_opentelemetry.svg"/></a>
+<a href="https://www.npmjs.com/package/@metinseylan/nestjs-opentelemetry"><img src="https://img.shields.io/npm/v/@metinseylan/nestjs-opentelemetry.svg"/> <img src="https://img.shields.io/npm/dt/@metinseylan/nestjs-opentelemetry.svg"/></a>
+<a href="http://packagequality.com/#?package=@metinseylan/nestjs-opentelemetry"><img src="http://npm.packagequality.com/shield/@metinseylan/nestjs-opentelemetry.svg"/></a>
 <a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/npm/l/nestjs_opentelemetry.svg"/></a>
 <a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/github/stars/MetinSeylan/nestjs_opentelemetry.svg"/></a>
 
@@ -8,7 +8,7 @@
 
 #### 🚀 Installation
 ``` bash
-npm install nestjs_opentelemetry --save
+npm install @metinseylan/nestjs-opentelemetry --save
 ```
 
 #### 💾 Example Module Setup
@@ -42,7 +42,7 @@ OpenTelemetryModule.register({
 #### 🧐 Logging with TraceId
 After module setup you can use LoggerService, its provide trace id with every logging like this
 ``` typescript
-import { LoggerService } from 'nestjs_opentelemetry';
+import { LoggerService } from '@metinseylan/nestjs-opentelemetry';
 
 this.loggerService.log(
     'hello its firs logging with trace id',
@@ -55,7 +55,7 @@ this.loggerService.log(
 If you need, you can define custom Tracing Span for a method, async or normal its works for both of them, Span takes name parameter but by default same as method name
 
 ``` typescript
-import { Span } from 'nestjs_opentelemetry';
+import { Span } from '@metinseylan/nestjs-opentelemetry';
 
 @Span('CRITICAL_SECTION')
 async getHello() {
