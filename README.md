@@ -1,6 +1,9 @@
+<p align="center">
+  <img alt="NestJS OpenTelemetry logo" src="./docs/logo.png"/>
+</p>
+
 <h1 align="center">NestJS OpenTelemetry</h1>
 <a href="https://www.npmjs.com/package/@metinseylan/nestjs-opentelemetry"><img src="https://img.shields.io/npm/v/@metinseylan/nestjs-opentelemetry.svg"/> <img src="https://img.shields.io/npm/dt/@metinseylan/nestjs-opentelemetry.svg"/></a>
-<a href="http://packagequality.com/#?package=@metinseylan/nestjs-opentelemetry"><img src="http://npm.packagequality.com/shield/@metinseylan/nestjs-opentelemetry.svg"/></a>
 <a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/npm/l/nestjs_opentelemetry.svg"/></a>
 <a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/github/stars/MetinSeylan/nestjs_opentelemetry.svg"/></a>
 
