@@ -35,7 +35,7 @@ export class LoggerService extends Logger {
 
   // @ts-ignore
   warn(message: any, context?: string, attr?: Record<string, any>) {
-    super.log(`${this.getTraceId(message, attr)}${message}`, context);
+    super.warn(`${this.getTraceId(message, attr)}${message}`, context);
   }
 
   debug(message: any, context?: string, attr?: Record<string, any>) {
