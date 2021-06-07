@@ -4,8 +4,8 @@
 
 <h1 align="center">NestJS OpenTelemetry</h1>
 <a href="https://www.npmjs.com/package/@metinseylan/nestjs-opentelemetry"><img src="https://img.shields.io/npm/v/@metinseylan/nestjs-opentelemetry.svg"/> <img src="https://img.shields.io/npm/dt/@metinseylan/nestjs-opentelemetry.svg"/></a>
-<a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/npm/l/nestjs_opentelemetry.svg"/></a>
-<a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/github/stars/MetinSeylan/nestjs_opentelemetry.svg"/></a>
+<a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/npm/l/@metinseylan/nestjs-opentelemetry.svg"/></a>
+<a href="https://github.com/MetinSeylan/Nestjs-OpenTelemetry"><img src="https://img.shields.io/github/stars/MetinSeylan/nestjs-opentelemetry.svg"/></a>
 
 <p>This library provides <a href="https://opentelemetry.io/">OpenTelemetry</a> SDK for Nestjs environment, TraceId injection, custom Span decorator, Logger and etc.</p>
 
