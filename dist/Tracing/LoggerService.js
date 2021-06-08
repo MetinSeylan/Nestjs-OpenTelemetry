@@ -33,7 +33,7 @@ let LoggerService = class LoggerService extends common_1.Logger {
         super.error(`${this.getTraceId(message, attr)}${message}`, trace, context);
     }
     warn(message, context, attr) {
-        super.log(`${this.getTraceId(message, attr)}${message}`, context);
+        super.warn(`${this.getTraceId(message, attr)}${message}`, context);
     }
     debug(message, context, attr) {
         super.debug(`${this.getTraceId(message, attr)}${message}`, context);
