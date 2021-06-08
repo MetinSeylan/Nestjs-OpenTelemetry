@@ -27,6 +27,13 @@ npm install --save \
 ```
 Module should be imported to main nestjs module. Register method accepts <a href="https://github.com/open-telemetry/opentelemetry-js/tree/main/packages/opentelemetry-sdk-node">OpenTelemetry NodeSDK</a> configuration
 ``` typescript
+import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
+import { CompositePropagator } from '@opentelemetry/core';
+import { B3InjectEncoding, B3Propagator } from '@opentelemetry/propagator-b3';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
+import { BatchSpanProcessor } from '@opentelemetry/tracing';
+import { ZipkinExporter } from '@opentelemetry/exporter-zipkin';
+
 OpenTelemetryModule.register({
   spanProcessor: new BatchSpanProcessor(
     new ZipkinExporter({ serviceName: 'MAVI_VATAN' }),
