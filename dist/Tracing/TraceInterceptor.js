@@ -15,11 +15,13 @@ let TraceInterceptor = class TraceInterceptor {
         return next.handle().pipe(operators_1.map((data) => {
             const req = executionContext.switchToHttp().getRequest();
             const span = api_1.trace.getSpan(api_1.context.active());
-            const spanContext = span.spanContext();
-            req.res.header('x-b3-traceid', spanContext.traceId);
-            req.res.header('x-b3-spanid', spanContext.spanId);
-            if (span['parentSpanId'])
-                req.res.header('x-b3-parentspanid', span['parentSpanId']);
+            if (span) {
+                const spanContext = span.spanContext();
+                req.res.header('x-b3-traceid', spanContext.traceId);
+                req.res.header('x-b3-spanid', spanContext.spanId);
+                if (span['parentSpanId'])
+                    req.res.header('x-b3-parentspanid', span['parentSpanId']);
+            }
             return data;
         }));
     }

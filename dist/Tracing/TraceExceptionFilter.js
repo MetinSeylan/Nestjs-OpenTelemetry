@@ -15,15 +15,17 @@ let TraceExceptionFilter = class TraceExceptionFilter extends core_1.BaseExcepti
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
         const span = api_1.trace.getSpan(api_1.context.active());
-        const spanContext = span.spanContext();
-        span.setStatus({
-            code: api_1.SpanStatusCode.ERROR,
-            message: JSON.stringify(exception),
-        });
-        response.header('x-b3-traceid', spanContext.traceId);
-        response.header('x-b3-spanid', spanContext.spanId);
-        if (span['parentSpanId'])
-            response.header('x-b3-parentspanid', span['parentSpanId']);
+        if (span) {
+            const spanContext = span.spanContext();
+            span.setStatus({
+                code: api_1.SpanStatusCode.ERROR,
+                message: JSON.stringify(exception),
+            });
+            response.header('x-b3-traceid', spanContext.traceId);
+            response.header('x-b3-spanid', spanContext.spanId);
+            if (span['parentSpanId'])
+                response.header('x-b3-parentspanid', span['parentSpanId']);
+        }
         super.catch(exception, host);
     }
 };
