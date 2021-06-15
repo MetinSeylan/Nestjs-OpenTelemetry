@@ -9,17 +9,19 @@ export class TraceExceptionFilter extends BaseExceptionFilter {
     const response = ctx.getResponse();
 
     const span = trace.getSpan(context.active());
-    const spanContext = span.spanContext();
+    if(span) {
+      const spanContext = span.spanContext();
 
-    span.setStatus({
-      code: SpanStatusCode.ERROR,
-      message: JSON.stringify(exception),
-    });
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: JSON.stringify(exception),
+      });
 
-    response.header('x-b3-traceid', spanContext.traceId);
-    response.header('x-b3-spanid', spanContext.spanId);
-    if (span['parentSpanId'])
-      response.header('x-b3-parentspanid', span['parentSpanId']);
+      response.header('x-b3-traceid', spanContext.traceId);
+      response.header('x-b3-spanid', spanContext.spanId);
+      if (span['parentSpanId'])
+        response.header('x-b3-parentspanid', span['parentSpanId']);
+    }
 
     super.catch(exception, host);
   }
