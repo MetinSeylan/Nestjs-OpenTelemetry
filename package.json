@@ -1,6 +1,6 @@
 {
   "name": "@metinseylan/nestjs-opentelemetry",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "opentelemetry module for nestjs",
   "main": "dist/index.js",
   "scripts": {
