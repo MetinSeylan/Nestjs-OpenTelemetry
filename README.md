@@ -95,6 +95,6 @@ export class AppService {
   }
 }
 ```
-final resuls in zipkin server looks like this
+#### 🎬 Final results should look like this in Zipkin server
 
 <img src="./docs/zipkin_screen.png"  alt="Nestjs opentelemetry zipkin result"/>
