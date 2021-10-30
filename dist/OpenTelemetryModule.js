@@ -1,56 +1,181 @@
 "use strict";
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var OpenTelemetryModule_1;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.OpenTelemetryModule = void 0;
-const common_1 = require("@nestjs/common");
-const LoggerService_1 = require("./Tracing/LoggerService");
-const core_1 = require("@nestjs/core");
-const TraceInterceptor_1 = require("./Tracing/TraceInterceptor");
-const TraceExceptionFilter_1 = require("./Tracing/TraceExceptionFilter");
 const sdk_node_1 = require("@opentelemetry/sdk-node");
-const TraceService_1 = require("./Tracing/TraceService");
+const TraceService_1 = require("./Trace/TraceService");
 const Constants_1 = require("./Constants");
-let OpenTelemetryModule = OpenTelemetryModule_1 = class OpenTelemetryModule {
-    static async register(configuration) {
+const MetricService_1 = require("./Metric/MetricService");
+const OpenTelemetryModuleConfig_1 = require("./OpenTelemetryModuleConfig");
+const OpenTelemetryService_1 = require("./OpenTelemetryService");
+const DecoratorInjector_1 = require("./Trace/Injectors/DecoratorInjector");
+const core_1 = require("@nestjs/core");
+const MetricHttpMiddleware_1 = require("./Metric/Interceptors/Http/MetricHttpMiddleware");
+const MetricInterceptor_1 = require("./Metric/Interceptors/MetricInterceptor");
+const event_emitter_1 = require("@nestjs/event-emitter");
+const MetricHttpEventProducer_1 = require("./Metric/Interceptors/Http/MetricHttpEventProducer");
+const MetricGrpcEventProducer_1 = require("./Metric/Interceptors/Grpc/MetricGrpcEventProducer");
+const MetricRabbitMQEventProducer_1 = require("./Metric/Interceptors/RabbitMQ/MetricRabbitMQEventProducer");
+const DecoratorObserverMetricInjector_1 = require("./Metric/Injectors/DecoratorObserverMetricInjector");
+const DecoratorCounterMetricInjector_1 = require("./Metric/Injectors/DecoratorCounterMetricInjector");
+const sdk_metrics_base_1 = require("@opentelemetry/sdk-metrics-base");
+const sdk_trace_base_1 = require("@opentelemetry/sdk-trace-base");
+class OpenTelemetryModule {
+    configure(consumer) {
+        consumer.apply(MetricHttpMiddleware_1.MetricHttpMiddleware).forRoutes('*');
+    }
+    static async forRoot(configuration = {}) {
+        configuration = { ...OpenTelemetryModuleConfig_1.OpenTelemetryModuleDefaultConfig, ...configuration };
+        const injectors = configuration?.traceAutoInjectors ?? [];
+        const metrics = configuration?.metricAutoObservers ?? [];
         return {
             global: true,
-            module: OpenTelemetryModule_1,
+            module: OpenTelemetryModule,
+            imports: [event_emitter_1.EventEmitterModule.forRoot()],
             providers: [
-                await this.createProvider(configuration),
+                ...injectors,
+                ...metrics,
+                TraceService_1.TraceService,
+                MetricService_1.MetricService,
+                OpenTelemetryService_1.OpenTelemetryService,
+                MetricHttpMiddleware_1.MetricHttpMiddleware,
+                MetricHttpEventProducer_1.MetricHttpEventProducer,
+                MetricGrpcEventProducer_1.MetricGrpcEventProducer,
+                MetricRabbitMQEventProducer_1.MetricRabbitMQEventProducer,
+                DecoratorInjector_1.DecoratorInjector,
+                DecoratorObserverMetricInjector_1.DecoratorObserverMetricInjector,
+                DecoratorCounterMetricInjector_1.DecoratorCounterMetricInjector,
+                this.buildProvider(configuration),
+                this.buildInjectors(configuration),
+                this.buildMeter(),
+                this.buildTracer(),
+                {
+                    provide: Constants_1.Constants.SDK_CONFIG,
+                    useValue: configuration,
+                },
                 {
                     provide: core_1.APP_INTERCEPTOR,
-                    useClass: TraceInterceptor_1.TraceInterceptor,
+                    useClass: MetricInterceptor_1.MetricInterceptor,
                 },
-                {
-                    provide: core_1.APP_FILTER,
-                    useClass: TraceExceptionFilter_1.TraceExceptionFilter,
-                },
-                LoggerService_1.LoggerService,
-                TraceService_1.TraceService,
             ],
-            exports: [
-                LoggerService_1.LoggerService,
-                TraceService_1.TraceService,
-            ],
+            exports: [TraceService_1.TraceService, MetricService_1.MetricService, sdk_metrics_base_1.Meter, sdk_trace_base_1.Tracer],
         };
     }
-    static async createProvider(configuration) {
-        const sdk = new sdk_node_1.NodeSDK(configuration);
-        await sdk.start();
+    static buildProvider(configuration) {
         return {
             provide: Constants_1.Constants.SDK,
-            useValue: sdk,
+            useFactory: async () => {
+                const sdk = new sdk_node_1.NodeSDK(configuration);
+                await sdk.start();
+                return sdk;
+            },
         };
     }
-};
-OpenTelemetryModule = OpenTelemetryModule_1 = __decorate([
-    common_1.Module({})
-], OpenTelemetryModule);
+    static buildInjectors(configuration) {
+        const injectors = configuration?.traceAutoInjectors ?? [];
+        const metrics = configuration?.metricAutoObservers ?? [];
+        return {
+            provide: Constants_1.Constants.SDK_INJECTORS,
+            useFactory: async (...injectors) => {
+                for await (const injector of injectors) {
+                    if (injector['inject'])
+                        await injector.inject();
+                }
+            },
+            inject: [
+                DecoratorInjector_1.DecoratorInjector,
+                DecoratorObserverMetricInjector_1.DecoratorObserverMetricInjector,
+                DecoratorCounterMetricInjector_1.DecoratorCounterMetricInjector,
+                ...injectors,
+                ...metrics,
+            ],
+        };
+    }
+    static async forRootAsync(configuration = {}) {
+        return {
+            global: true,
+            module: OpenTelemetryModule,
+            imports: [...configuration?.imports, event_emitter_1.EventEmitterModule.forRoot()],
+            providers: [
+                TraceService_1.TraceService,
+                MetricService_1.MetricService,
+                OpenTelemetryService_1.OpenTelemetryService,
+                MetricHttpMiddleware_1.MetricHttpMiddleware,
+                MetricHttpEventProducer_1.MetricHttpEventProducer,
+                MetricGrpcEventProducer_1.MetricGrpcEventProducer,
+                MetricRabbitMQEventProducer_1.MetricRabbitMQEventProducer,
+                this.buildAsyncProvider(),
+                this.buildAsyncInjectors(),
+                this.buildMeter(),
+                this.buildTracer(),
+                {
+                    provide: Constants_1.Constants.SDK_CONFIG,
+                    useFactory: configuration.useFactory,
+                    inject: configuration.inject,
+                },
+                {
+                    provide: core_1.APP_INTERCEPTOR,
+                    useClass: MetricInterceptor_1.MetricInterceptor,
+                },
+            ],
+            exports: [TraceService_1.TraceService, MetricService_1.MetricService, sdk_metrics_base_1.Meter, sdk_trace_base_1.Tracer],
+        };
+    }
+    static buildAsyncProvider() {
+        return {
+            provide: Constants_1.Constants.SDK,
+            useFactory: async (config) => {
+                config = { ...OpenTelemetryModuleConfig_1.OpenTelemetryModuleDefaultConfig, ...config };
+                const sdk = new sdk_node_1.NodeSDK(config);
+                await sdk.start();
+                return sdk;
+            },
+            inject: [Constants_1.Constants.SDK_CONFIG],
+        };
+    }
+    static buildAsyncInjectors() {
+        return {
+            provide: Constants_1.Constants.SDK_INJECTORS,
+            useFactory: async (config, moduleRef) => {
+                config = { ...OpenTelemetryModuleConfig_1.OpenTelemetryModuleDefaultConfig, ...config };
+                const injectors = config.traceAutoInjectors ??
+                    OpenTelemetryModuleConfig_1.OpenTelemetryModuleDefaultConfig.traceAutoInjectors;
+                const metrics = config.metricAutoObservers ??
+                    OpenTelemetryModuleConfig_1.OpenTelemetryModuleDefaultConfig.metricAutoObservers;
+                const decoratorInjector = await moduleRef.create(DecoratorInjector_1.DecoratorInjector);
+                await decoratorInjector.inject();
+                const decoratorObserverMetricInjector = await moduleRef.create(DecoratorObserverMetricInjector_1.DecoratorObserverMetricInjector);
+                await decoratorObserverMetricInjector.inject();
+                const decoratorCounterMetricInjector = await moduleRef.create(DecoratorCounterMetricInjector_1.DecoratorCounterMetricInjector);
+                await decoratorCounterMetricInjector.inject();
+                for await (const injector of injectors) {
+                    const created = await moduleRef.create(injector);
+                    if (created['inject'])
+                        await created.inject();
+                }
+                for await (const metric of metrics) {
+                    const createdMetric = await moduleRef.create(metric);
+                    if (createdMetric['inject'])
+                        await createdMetric.inject();
+                }
+                return {};
+            },
+            inject: [Constants_1.Constants.SDK_CONFIG, core_1.ModuleRef],
+        };
+    }
+    static buildMeter() {
+        return {
+            provide: sdk_metrics_base_1.Meter,
+            useFactory: (metricService) => metricService.getMeter(),
+            inject: [MetricService_1.MetricService],
+        };
+    }
+    static buildTracer() {
+        return {
+            provide: sdk_trace_base_1.Tracer,
+            useFactory: (traceService) => traceService.getTracer(),
+            inject: [TraceService_1.TraceService],
+        };
+    }
+}
 exports.OpenTelemetryModule = OpenTelemetryModule;
 //# sourceMappingURL=OpenTelemetryModule.js.map
