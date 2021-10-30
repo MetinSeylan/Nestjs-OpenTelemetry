@@ -332,6 +332,7 @@ export class AppModule {}
 | status    | number of HttpStatus                                            |
 | uri       | url path                                                        |
 
+***
 
 ### Lets Combine All of them
 ```ts
