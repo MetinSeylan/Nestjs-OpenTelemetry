@@ -1,0 +1,1 @@
+{"version":3,"file":"NoopMetricExporter.js","sourceRoot":"","sources":["../../src/Metric/NoopMetricExporter.ts"],"names":[],"mappings":";;;AAGA,MAAa,kBAAkB;IAC7B,MAAM,CACJ,OAAuB,EACvB,cAA8C;IAGhD,CAAC;IAED,QAAQ;QACN,OAAO,OAAO,CAAC,OAAO,CAAC,SAAS,CAAC,CAAC;IACpC,CAAC;CACF;AAXD,gDAWC"}
