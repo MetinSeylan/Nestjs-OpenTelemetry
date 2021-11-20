@@ -14,6 +14,7 @@ export class MetricService {
     @Inject(Constants.SDK) private readonly nodeSDK: NodeSDK,
   ) {
     this.meterProvider = new MeterProvider({
+      // @ts-ignore
       exporter: sdkConfig.metricExporter,
       interval: sdkConfig.metricInterval,
     });

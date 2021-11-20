@@ -17,8 +17,6 @@ describe('Tracing Pipe Injector Test', () => {
   const exporterSpy = jest.spyOn(exporter, 'onStart');
 
   const sdkModule = OpenTelemetryModule.forRoot({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     spanProcessor: exporter,
     traceAutoInjectors: [PipeInjector],
   });
