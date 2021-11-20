@@ -28,11 +28,12 @@ let GuardInjector = class GuardInjector extends BaseTraceInjector_1.BaseTraceInj
                 const guards = this.getGuards(controller.metatype).map((guard) => {
                     const prototype = guard['prototype'] ?? guard;
                     const traceName = `Guard->${controller.name}.${prototype.constructor.name}`;
-                    guard.canActivate = this.wrap(prototype.canActivate, traceName, {
+                    prototype.canActivate = this.wrap(prototype.canActivate, traceName, {
                         controller: controller.name,
                         guard: prototype.constructor.name,
                         scope: 'CONTROLLER',
                     });
+                    Object.assign(prototype, this);
                     this.loggerService.log(`Mapped ${traceName}`, this.constructor.name);
                     return guard;
                 });
@@ -46,12 +47,13 @@ let GuardInjector = class GuardInjector extends BaseTraceInjector_1.BaseTraceInj
                     const guards = this.getGuards(controller.metatype.prototype[key]).map((guard) => {
                         const prototype = guard['prototype'] ?? guard;
                         const traceName = `Guard->${controller.name}.${controller.metatype.prototype[key].name}.${prototype.constructor.name}`;
-                        guard.canActivate = this.wrap(prototype.canActivate, traceName, {
+                        prototype.canActivate = this.wrap(prototype.canActivate, traceName, {
                             controller: controller.name,
                             guard: prototype.constructor.name,
                             method: controller.metatype.prototype[key].name,
                             scope: 'CONTROLLER_METHOD',
                         });
+                        Object.assign(prototype, this);
                         this.loggerService.log(`Mapped ${traceName}`, this.constructor.name);
                         return guard;
                     });
@@ -74,6 +76,7 @@ let GuardInjector = class GuardInjector extends BaseTraceInjector_1.BaseTraceInj
                     guard: provider.metatype.name,
                     scope: 'GLOBAL',
                 });
+                Object.assign(provider.metatype.prototype, this);
                 this.loggerService.log(`Mapped ${traceName}`, this.constructor.name);
             }
         }
