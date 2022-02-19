@@ -1,7 +1,7 @@
 import { BaseMetric } from '../BaseMetric';
 import { MetricService } from '../../MetricService';
 import { Injectable } from '@nestjs/common';
-import { ValueRecorder, ValueType } from '@opentelemetry/api-metrics';
+import { Histogram, ValueType } from '@opentelemetry/api-metrics';
 import { OnEvent } from '@nestjs/event-emitter';
 import { ProducerEvent } from '../../Interceptors/ProducerEvent';
 import { ProducerHttpEvent } from '../../Interceptors/Http/ProducerHttpEvent';
@@ -17,15 +17,15 @@ export class HttpRequestDurationSeconds implements BaseMetric {
   name = 'http_request_duration_seconds';
   description = 'http_request_duration_seconds';
 
-  private valueRecorder: ValueRecorder;
+  private histogram: Histogram;
 
   constructor(private readonly metricService: MetricService) {}
 
   async inject(): Promise<void> {
-    this.valueRecorder = this.metricService
+    this.histogram = this.metricService
       .getProvider()
       .getMeter('default')
-      .createValueRecorder(this.name, {
+      .createHistogram(this.name, {
         ...HttpRequestDurationSeconds.metricOptions,
         description: this.description,
       });
@@ -33,7 +33,7 @@ export class HttpRequestDurationSeconds implements BaseMetric {
 
   @OnEvent(ProducerEvent.HTTP)
   onResult(event: ProducerHttpEvent) {
-    this.valueRecorder.record(
+    this.histogram.record(
       event.time,
       Object.assign(event.labels, this.metricService.getLabels()),
     );

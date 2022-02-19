@@ -1,7 +1,7 @@
 import { BaseMetric } from './BaseMetric';
 import { MetricService } from '../MetricService';
 import { Injectable } from '@nestjs/common';
-import { ValueObserver } from '@opentelemetry/api-metrics';
+import { ObservableGauge } from '@opentelemetry/api-metrics';
 
 @Injectable()
 export class ActiveHandlesMetric implements BaseMetric {
@@ -9,7 +9,7 @@ export class ActiveHandlesMetric implements BaseMetric {
   description =
     'Number of active libuv handles grouped by handle type. Every handle type is C++ class name.';
 
-  private valueObserver: ValueObserver;
+  private observableGauge: ObservableGauge;
 
   constructor(private readonly metricService: MetricService) {}
 
@@ -18,10 +18,10 @@ export class ActiveHandlesMetric implements BaseMetric {
       return;
     }
 
-    this.valueObserver = this.metricService
+    this.observableGauge = this.metricService
       .getProvider()
       .getMeter('default')
-      .createValueObserver(
+      .createObservableGauge(
         this.name,
         {
           description: this.description,
@@ -31,7 +31,6 @@ export class ActiveHandlesMetric implements BaseMetric {
   }
 
   private observerCallback(observerResult) {
-    this.valueObserver.clear();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const handles = process._getActiveHandles();

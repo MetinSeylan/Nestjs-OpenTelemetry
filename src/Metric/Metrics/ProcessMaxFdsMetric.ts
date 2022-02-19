@@ -1,7 +1,7 @@
 import { BaseMetric } from './BaseMetric';
 import { MetricService } from '../MetricService';
 import { Injectable } from '@nestjs/common';
-import { ValueObserver } from '@opentelemetry/api-metrics';
+import { ObservableGauge } from '@opentelemetry/api-metrics';
 import * as fs from 'fs';
 
 @Injectable()
@@ -9,7 +9,7 @@ export class ProcessMaxFdsMetric implements BaseMetric {
   name = 'process_max_fds';
   description = 'Maximum number of open file descriptors.';
 
-  private valueObserver: ValueObserver;
+  private observableBase: ObservableGauge;
   private maxFds;
 
   constructor(private readonly metricService: MetricService) {}
@@ -33,10 +33,10 @@ export class ProcessMaxFdsMetric implements BaseMetric {
 
     if (this.maxFds === undefined) return;
 
-    this.valueObserver = this.metricService
+    this.observableBase = this.metricService
       .getProvider()
       .getMeter('default')
-      .createValueObserver(
+      .createObservableGauge(
         this.name,
         {
           description: this.description,

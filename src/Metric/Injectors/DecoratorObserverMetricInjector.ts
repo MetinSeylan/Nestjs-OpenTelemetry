@@ -89,7 +89,7 @@ export class DecoratorObserverMetricInjector extends BaseMetricInjector {
   private generateMetric(name: string, metricOptions: MetricOptions) {
     const metric = this.metricService
       .getMeter()
-      .createValueRecorder(name, metricOptions);
+      .createHistogram(name, metricOptions);
 
     return (time) => {
       metric.record(time, this.metricService.getLabels());

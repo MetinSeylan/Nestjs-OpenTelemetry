@@ -3,7 +3,7 @@ import { MetricService } from '../../MetricService';
 import { Injectable } from '@nestjs/common';
 import {
   MetricOptions,
-  ValueRecorder,
+  Histogram,
   ValueType,
 } from '@opentelemetry/api-metrics';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -20,15 +20,15 @@ export class RabbitMqRequestDurationSeconds implements BaseMetric {
   name = 'rmq_request_duration_seconds';
   description = 'rmq_request_duration_seconds';
 
-  private valueRecorder: ValueRecorder;
+  private histogram: Histogram;
 
   constructor(private readonly metricService: MetricService) {}
 
   async inject(): Promise<void> {
-    this.valueRecorder = this.metricService
+    this.histogram = this.metricService
       .getProvider()
       .getMeter('default')
-      .createValueRecorder(this.name, {
+      .createHistogram(this.name, {
         ...RabbitMqRequestDurationSeconds.metricOptions,
         description: this.description,
       });
@@ -36,7 +36,7 @@ export class RabbitMqRequestDurationSeconds implements BaseMetric {
 
   @OnEvent(ProducerEvent.RMQ)
   onResult(event: ProducerGrpcEvent) {
-    this.valueRecorder.record(
+    this.histogram.record(
       event.time,
       Object.assign(event.labels, this.metricService.getLabels()),
     );
