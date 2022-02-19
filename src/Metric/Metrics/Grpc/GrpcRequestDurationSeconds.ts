@@ -3,7 +3,7 @@ import { MetricService } from '../../MetricService';
 import { Injectable } from '@nestjs/common';
 import {
   MetricOptions,
-  ValueRecorder,
+  Histogram,
   ValueType,
 } from '@opentelemetry/api-metrics';
 import { OnEvent } from '@nestjs/event-emitter';
@@ -20,15 +20,15 @@ export class GrpcRequestDurationSeconds implements BaseMetric {
   name = 'grpc_request_duration_seconds';
   description = 'grpc_request_duration_seconds';
 
-  private valueRecorder: ValueRecorder;
+  private histogram: Histogram;
 
   constructor(private readonly metricService: MetricService) {}
 
   async inject(): Promise<void> {
-    this.valueRecorder = this.metricService
+    this.histogram = this.metricService
       .getProvider()
       .getMeter('default')
-      .createValueRecorder(this.name, {
+      .createHistogram(this.name, {
         ...GrpcRequestDurationSeconds.metricOptions,
         description: this.description,
       });
@@ -36,7 +36,7 @@ export class GrpcRequestDurationSeconds implements BaseMetric {
 
   @OnEvent(ProducerEvent.GRPC)
   onResult(event: ProducerGrpcEvent) {
-    this.valueRecorder.record(
+    this.histogram.record(
       event.time,
       Object.assign(event.labels, this.metricService.getLabels()),
     );

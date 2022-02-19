@@ -17,7 +17,7 @@ let ProcessOpenFdsMetric = class ProcessOpenFdsMetric {
     metricService;
     name = 'process_open_fds';
     description = 'Number of open file descriptors.';
-    valueObserver;
+    observableBase;
     constructor(metricService) {
         this.metricService = metricService;
     }
@@ -25,10 +25,10 @@ let ProcessOpenFdsMetric = class ProcessOpenFdsMetric {
         if (process.platform !== 'linux') {
             return;
         }
-        this.valueObserver = this.metricService
+        this.observableBase = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueObserver(this.name, {
+            .createObservableGauge(this.name, {
             description: this.description,
         }, (observerResult) => this.observerCallback(observerResult));
     }

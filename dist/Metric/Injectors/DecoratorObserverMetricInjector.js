@@ -72,7 +72,7 @@ let DecoratorObserverMetricInjector = class DecoratorObserverMetricInjector exte
     generateMetric(name, metricOptions) {
         const metric = this.metricService
             .getMeter()
-            .createValueRecorder(name, metricOptions);
+            .createHistogram(name, metricOptions);
         return (time) => {
             metric.record(time, this.metricService.getLabels());
         };

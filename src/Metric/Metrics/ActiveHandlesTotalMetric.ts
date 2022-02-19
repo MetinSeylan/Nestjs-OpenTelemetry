@@ -1,14 +1,14 @@
 import { BaseMetric } from './BaseMetric';
 import { MetricService } from '../MetricService';
 import { Injectable } from '@nestjs/common';
-import { ValueObserver } from '@opentelemetry/api-metrics';
+import { ObservableGauge } from '@opentelemetry/api-metrics';
 
 @Injectable()
 export class ActiveHandlesTotalMetric implements BaseMetric {
   name = 'nodejs_active_handles_total';
   description = 'Total number of active handles.';
 
-  private valueObserver: ValueObserver;
+  private observableBase: ObservableGauge;
 
   constructor(private readonly metricService: MetricService) {}
 
@@ -17,10 +17,10 @@ export class ActiveHandlesTotalMetric implements BaseMetric {
       return;
     }
 
-    this.valueObserver = this.metricService
+    this.observableBase = this.metricService
       .getProvider()
       .getMeter('default')
-      .createValueObserver(
+      .createObservableGauge(
         this.name,
         {
           description: this.description,
@@ -30,7 +30,6 @@ export class ActiveHandlesTotalMetric implements BaseMetric {
   }
 
   private observerCallback(observerResult) {
-    this.valueObserver.clear();
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const handles = process._getActiveHandles();

@@ -24,21 +24,21 @@ let GrpcRequestDurationSeconds = GrpcRequestDurationSeconds_1 = class GrpcReques
     };
     name = 'grpc_request_duration_seconds';
     description = 'grpc_request_duration_seconds';
-    valueRecorder;
+    histogram;
     constructor(metricService) {
         this.metricService = metricService;
     }
     async inject() {
-        this.valueRecorder = this.metricService
+        this.histogram = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueRecorder(this.name, {
+            .createHistogram(this.name, {
             ...GrpcRequestDurationSeconds_1.metricOptions,
             description: this.description,
         });
     }
     onResult(event) {
-        this.valueRecorder.record(event.time, Object.assign(event.labels, this.metricService.getLabels()));
+        this.histogram.record(event.time, Object.assign(event.labels, this.metricService.getLabels()));
     }
     static build(metricOptions) {
         GrpcRequestDurationSeconds_1.metricOptions = {

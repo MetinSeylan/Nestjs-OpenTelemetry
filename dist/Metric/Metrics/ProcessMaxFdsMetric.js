@@ -17,7 +17,7 @@ let ProcessMaxFdsMetric = class ProcessMaxFdsMetric {
     metricService;
     name = 'process_max_fds';
     description = 'Maximum number of open file descriptors.';
-    valueObserver;
+    observableBase;
     maxFds;
     constructor(metricService) {
         this.metricService = metricService;
@@ -41,10 +41,10 @@ let ProcessMaxFdsMetric = class ProcessMaxFdsMetric {
         }
         if (this.maxFds === undefined)
             return;
-        this.valueObserver = this.metricService
+        this.observableBase = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueObserver(this.name, {
+            .createObservableGauge(this.name, {
             description: this.description,
         }, (observerResult) => this.observerCallback(observerResult));
     }
