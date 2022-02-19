@@ -4,7 +4,7 @@ export declare class ActiveHandlesMetric implements BaseMetric {
     private readonly metricService;
     name: string;
     description: string;
-    private valueObserver;
+    private observableGauge;
     constructor(metricService: MetricService);
     inject(): Promise<void>;
     private observerCallback;

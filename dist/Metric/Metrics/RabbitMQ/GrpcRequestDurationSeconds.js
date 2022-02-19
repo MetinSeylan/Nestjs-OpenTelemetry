@@ -24,21 +24,21 @@ let RabbitMqRequestDurationSeconds = RabbitMqRequestDurationSeconds_1 = class Ra
     };
     name = 'rmq_request_duration_seconds';
     description = 'rmq_request_duration_seconds';
-    valueRecorder;
+    histogram;
     constructor(metricService) {
         this.metricService = metricService;
     }
     async inject() {
-        this.valueRecorder = this.metricService
+        this.histogram = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueRecorder(this.name, {
+            .createHistogram(this.name, {
             ...RabbitMqRequestDurationSeconds_1.metricOptions,
             description: this.description,
         });
     }
     onResult(event) {
-        this.valueRecorder.record(event.time, Object.assign(event.labels, this.metricService.getLabels()));
+        this.histogram.record(event.time, Object.assign(event.labels, this.metricService.getLabels()));
     }
     static build(metricOptions) {
         RabbitMqRequestDurationSeconds_1.metricOptions = {

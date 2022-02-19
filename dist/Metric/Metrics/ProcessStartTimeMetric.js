@@ -17,16 +17,16 @@ let ProcessStartTimeMetric = class ProcessStartTimeMetric {
     metricService;
     name = 'process_start_time_seconds';
     description = 'Start time of the process since unix epoch in seconds.';
-    valueObserver;
+    observableGauge;
     uptimeInSecond = Math.round(Date.now() / 1000 - process.uptime());
     constructor(metricService) {
         this.metricService = metricService;
     }
     async inject() {
-        this.valueObserver = this.metricService
+        this.observableGauge = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueObserver(this.name, {
+            .createObservableGauge(this.name, {
             description: this.description,
             aggregationTemporality: api_metrics_1.AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA,
         }, (observerResult) => this.observerCallback(observerResult));

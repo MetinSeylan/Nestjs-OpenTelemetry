@@ -16,7 +16,7 @@ let ActiveHandlesTotalMetric = class ActiveHandlesTotalMetric {
     metricService;
     name = 'nodejs_active_handles_total';
     description = 'Total number of active handles.';
-    valueObserver;
+    observableBase;
     constructor(metricService) {
         this.metricService = metricService;
     }
@@ -24,15 +24,14 @@ let ActiveHandlesTotalMetric = class ActiveHandlesTotalMetric {
         if (typeof process['_getActiveHandles'] !== 'function') {
             return;
         }
-        this.valueObserver = this.metricService
+        this.observableBase = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueObserver(this.name, {
+            .createObservableGauge(this.name, {
             description: this.description,
         }, (observerResult) => this.observerCallback(observerResult));
     }
     observerCallback(observerResult) {
-        this.valueObserver.clear();
         const handles = process._getActiveHandles();
         observerResult.observe(handles.length, this.metricService.getLabels());
     }

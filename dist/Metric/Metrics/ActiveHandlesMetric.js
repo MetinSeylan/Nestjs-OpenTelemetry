@@ -16,7 +16,7 @@ let ActiveHandlesMetric = class ActiveHandlesMetric {
     metricService;
     name = 'nodejs_active_handles';
     description = 'Number of active libuv handles grouped by handle type. Every handle type is C++ class name.';
-    valueObserver;
+    observableGauge;
     constructor(metricService) {
         this.metricService = metricService;
     }
@@ -24,15 +24,14 @@ let ActiveHandlesMetric = class ActiveHandlesMetric {
         if (typeof process['_getActiveHandles'] !== 'function') {
             return;
         }
-        this.valueObserver = this.metricService
+        this.observableGauge = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueObserver(this.name, {
+            .createObservableGauge(this.name, {
             description: this.description,
         }, (observerResult) => this.observerCallback(observerResult));
     }
     observerCallback(observerResult) {
-        this.valueObserver.clear();
         const handles = process._getActiveHandles();
         const data = this.aggregateByObjectName(handles);
         for (const key in data) {

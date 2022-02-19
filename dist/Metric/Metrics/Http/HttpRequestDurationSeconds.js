@@ -24,21 +24,21 @@ let HttpRequestDurationSeconds = HttpRequestDurationSeconds_1 = class HttpReques
     };
     name = 'http_request_duration_seconds';
     description = 'http_request_duration_seconds';
-    valueRecorder;
+    histogram;
     constructor(metricService) {
         this.metricService = metricService;
     }
     async inject() {
-        this.valueRecorder = this.metricService
+        this.histogram = this.metricService
             .getProvider()
             .getMeter('default')
-            .createValueRecorder(this.name, {
+            .createHistogram(this.name, {
             ...HttpRequestDurationSeconds_1.metricOptions,
             description: this.description,
         });
     }
     onResult(event) {
-        this.valueRecorder.record(event.time, Object.assign(event.labels, this.metricService.getLabels()));
+        this.histogram.record(event.time, Object.assign(event.labels, this.metricService.getLabels()));
     }
     static build(metricOptions) {
         HttpRequestDurationSeconds_1.metricOptions = {

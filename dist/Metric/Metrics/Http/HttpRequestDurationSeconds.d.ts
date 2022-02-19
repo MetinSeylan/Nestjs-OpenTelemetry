@@ -7,7 +7,7 @@ export declare class HttpRequestDurationSeconds implements BaseMetric {
     private static metricOptions;
     name: string;
     description: string;
-    private valueRecorder;
+    private histogram;
     constructor(metricService: MetricService);
     inject(): Promise<void>;
     onResult(event: ProducerHttpEvent): void;
