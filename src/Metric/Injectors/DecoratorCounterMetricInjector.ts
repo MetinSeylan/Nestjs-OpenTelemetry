@@ -41,6 +41,8 @@ export class DecoratorCounterMetricInjector extends BaseMetricInjector {
           !this.isAffected(provider.metatype.prototype[key])
         ) {
           const options = this.getOptions(provider.metatype.prototype[key]);
+          if (options.type !== DecoratorType.COUNTER) return;
+
           const name =
             options['name']?.toLowerCase() ??
             this.generateName(provider, provider.metatype.prototype[key]);

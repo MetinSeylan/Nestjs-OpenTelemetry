@@ -76,6 +76,9 @@ export class DecoratorObserverMetricInjector extends BaseMetricInjector {
           const options = this.getOptions(
             isControllerDecorated ? controller.metatype : prototype,
           );
+
+          if (options.type !== DecoratorType.OBSERVER) return;
+
           const name = this.generateName(controller, prototype, options);
           const metric = this.generateMetric(name, options['options']);
 
