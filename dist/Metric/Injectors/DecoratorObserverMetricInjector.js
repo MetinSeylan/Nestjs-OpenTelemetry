@@ -61,6 +61,8 @@ let DecoratorObserverMetricInjector = class DecoratorObserverMetricInjector exte
                     (this.isDecorated(prototype) && !this.isAffected(prototype))) &&
                     this.isPath(prototype)) {
                     const options = this.getOptions(isControllerDecorated ? controller.metatype : prototype);
+                    if (options.type !== DecoratorType_1.DecoratorType.OBSERVER)
+                        return;
                     const name = this.generateName(controller, prototype, options);
                     const metric = this.generateMetric(name, options['options']);
                     controller.metatype.prototype[key] = this.wrap(prototype, metric);
