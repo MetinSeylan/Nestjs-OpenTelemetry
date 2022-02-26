@@ -39,6 +39,8 @@ let DecoratorCounterMetricInjector = class DecoratorCounterMetricInjector extend
                 if (this.isDecorated(provider.metatype.prototype[key]) &&
                     !this.isAffected(provider.metatype.prototype[key])) {
                     const options = this.getOptions(provider.metatype.prototype[key]);
+                    if (options.type !== DecoratorType_1.DecoratorType.COUNTER)
+                        return;
                     const name = options['name']?.toLowerCase() ??
                         this.generateName(provider, provider.metatype.prototype[key]);
                     const metric = this.generateMetric(name, options['options']);
