@@ -62,6 +62,7 @@
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
+    "@nestjs/cli": "^8.2.2",
     "@nestjs/common": "^8.1.1",
     "@nestjs/core": "^8.1.1",
     "@nestjs/event-emitter": "^1.0.0",
