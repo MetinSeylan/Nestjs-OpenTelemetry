@@ -1,6 +1,6 @@
 {
   "name": "@metinseylan/nestjs-opentelemetry",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "deeply integrated OpenTelemetry module for Nestjs",
   "author": "metinsyln@gmail.com",
   "license": "MIT",
@@ -17,7 +17,9 @@
     "metric",
     "prometheus",
     "zipkin",
-    "jaeger"
+    "jaeger",
+    "grafana",
+    "opencensus"
   ],
   "bugs": {
     "url": "https://github.com/MetinSeylan/Nestjs-OpenTelemetry/issues"
@@ -39,6 +41,9 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nestjs/event-emitter": "^1.0.0",
+    "@nestjs/microservices": "^8.1.1",
+    "@nestjs/schedule": "^1.0.2",
     "@opentelemetry/api": "^1.0.4",
     "@opentelemetry/context-async-hooks": "^1.0.1",
     "@opentelemetry/core": "^1.0.1",
