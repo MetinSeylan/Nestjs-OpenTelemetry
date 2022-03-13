@@ -24,6 +24,7 @@ const core_1 = require("@opentelemetry/core");
 const propagator_jaeger_1 = require("@opentelemetry/propagator-jaeger");
 const propagator_b3_1 = require("@opentelemetry/propagator-b3");
 exports.OpenTelemetryModuleDefaultConfig = {
+    applicationName: 'UNDEFINED',
     traceAutoInjectors: [
         ControllerInjector_1.ControllerInjector,
         GuardInjector_1.GuardInjector,
