@@ -41,6 +41,9 @@ let MetricService = class MetricService {
         delete attr['process.executable.name'];
         delete attr['process.pid'];
         delete attr['process.command_line'];
+        if (!attr['application']) {
+            attr['application'] = this.sdkConfig.applicationName;
+        }
         return attr;
     }
 };

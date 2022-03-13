@@ -23,10 +23,12 @@ import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { CompositePropagator } from '@opentelemetry/core';
 export interface OpenTelemetryModuleConfig extends Partial<NodeSDKConfiguration> {
+    applicationName?: string;
     traceAutoInjectors?: Provider<Injector>[];
     metricAutoObservers?: Provider<BaseMetric>[];
 }
 export declare const OpenTelemetryModuleDefaultConfig: {
+    applicationName: string;
     traceAutoInjectors: (typeof ControllerInjector | typeof GuardInjector | typeof EventEmitterInjector | typeof ScheduleInjector | typeof PipeInjector | typeof LoggerInjector)[];
     metricAutoObservers: (typeof ResourceMetric | typeof ProcessStartTimeMetric | typeof ProcessOpenFdsMetric | typeof ProcessMaxFdsMetric | typeof ActiveHandlesMetric | typeof ActiveHandlesTotalMetric | typeof HttpRequestDurationSeconds | typeof GrpcRequestDurationSeconds | typeof RabbitMqRequestDurationSeconds)[];
     autoDetectResources: boolean;
