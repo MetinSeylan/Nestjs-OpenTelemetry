@@ -40,7 +40,11 @@ This is a basic configuration without any trace and metric exporter, but include
 import { OpenTelemetryModule } from '@metinseylan/nestjs-opentelemetry';
 
 @Module({
-  imports: [OpenTelemetryModule.forRoot()]
+  imports: [
+    OpenTelemetryModule.forRoot({
+      applicationName: 'nestjs-opentelemetry-example',
+    })
+  ]
 })
 export class AppModule {}
 ```
@@ -201,6 +205,7 @@ import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 
 @Module({
   imports: [OpenTelemetryModule.forRoot({
+    applicationName: 'nestjs-opentelemetry-example',
     metricExporter: new PrometheusExporter({
       endpoint: 'metrics',
       port: 9464,
@@ -291,6 +296,7 @@ import {
 @Module({
   imports: [
     OpenTelemetryModule.forRoot({
+      applicationName: 'nestjs-opentelemetry-example',
       metricAutoObservers: [
         HttpRequestDurationSeconds.build({
           boundaries: [20, 30, 100],
@@ -345,6 +351,7 @@ import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 @Module({
   imports: [
     OpenTelemetryModule.forRoot({
+      applicationName: 'nestjs-opentelemetry-example',
       metricExporter: new PrometheusExporter({
         endpoint: 'metrics',
         port: 9464,
