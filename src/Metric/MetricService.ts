@@ -35,7 +35,9 @@ export class MetricService {
     delete attr['process.pid'];
     delete attr['process.command_line'];
 
-    attr['application'] = this.sdkConfig.applicationName;
+    if (!attr['application']) {
+      attr['application'] = this.sdkConfig.applicationName;
+    }
 
     return attr;
   }
