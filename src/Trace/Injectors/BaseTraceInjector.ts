@@ -59,32 +59,30 @@ export class BaseTraceInjector {
     const method = {
       [prototype.name]: function (...args: any[]) {
         const tracer = trace.getTracer('default');
-        const currentSpan =
-          trace.getSpan(context.active()) ?? tracer.startSpan('default');
+        const currentSpan = tracer.startSpan(traceName);
 
         return context.with(
           trace.setSpan(context.active(), currentSpan),
           () => {
-            const span = tracer.startSpan(traceName);
-            span.setAttributes(attributes);
+            currentSpan.setAttributes(attributes);
             if (prototype.constructor.name === 'AsyncFunction') {
               return prototype
                 .apply(this, args)
                 .catch((error) =>
-                  BaseTraceInjector.recordException(error, span),
+                  BaseTraceInjector.recordException(error, currentSpan),
                 )
                 .finally(() => {
-                  span.end();
+                  currentSpan.end();
                 });
             } else {
               try {
                 const result = prototype.apply(this, args);
-                span.end();
+                currentSpan.end();
                 return result;
               } catch (error) {
-                BaseTraceInjector.recordException(error, span);
+                BaseTraceInjector.recordException(error, currentSpan);
               } finally {
-                span.end();
+                currentSpan.end();
               }
             }
           },
