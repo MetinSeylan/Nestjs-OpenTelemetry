@@ -52,29 +52,28 @@ class BaseTraceInjector {
         const method = {
             [prototype.name]: function (...args) {
                 const tracer = api_1.trace.getTracer('default');
-                const currentSpan = api_1.trace.getSpan(api_1.context.active()) ?? tracer.startSpan('default');
+                const currentSpan = tracer.startSpan(traceName);
                 return api_1.context.with(api_1.trace.setSpan(api_1.context.active(), currentSpan), () => {
-                    const span = tracer.startSpan(traceName);
-                    span.setAttributes(attributes);
+                    currentSpan.setAttributes(attributes);
                     if (prototype.constructor.name === 'AsyncFunction') {
                         return prototype
                             .apply(this, args)
-                            .catch((error) => BaseTraceInjector.recordException(error, span))
+                            .catch((error) => BaseTraceInjector.recordException(error, currentSpan))
                             .finally(() => {
-                            span.end();
+                            currentSpan.end();
                         });
                     }
                     else {
                         try {
                             const result = prototype.apply(this, args);
-                            span.end();
+                            currentSpan.end();
                             return result;
                         }
                         catch (error) {
-                            BaseTraceInjector.recordException(error, span);
+                            BaseTraceInjector.recordException(error, currentSpan);
                         }
                         finally {
-                            span.end();
+                            currentSpan.end();
                         }
                     }
                 });
