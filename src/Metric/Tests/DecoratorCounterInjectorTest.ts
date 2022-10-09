@@ -1,17 +1,12 @@
 import { Test } from '@nestjs/testing';
 import { OpenTelemetryModule } from '../../OpenTelemetryModule';
 import { Injectable } from '@nestjs/common';
-import { AlwaysOnSampler } from '@opentelemetry/core';
 import { Counter } from '../Decorators/Counter';
 import waitForExpect from 'wait-for-expect';
 
 describe('Decorator Counter Injector Test', () => {
   const exporter = jest.fn();
-  const sdkModule = OpenTelemetryModule.forRoot({
-    metricExporter: { export: exporter, shutdown: jest.fn() },
-    metricInterval: 10,
-    sampler: new AlwaysOnSampler(),
-  });
+  const sdkModule = OpenTelemetryModule.forRoot();
 
   beforeEach(() => {
     exporter.mockClear();

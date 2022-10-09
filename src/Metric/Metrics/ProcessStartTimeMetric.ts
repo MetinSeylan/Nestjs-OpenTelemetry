@@ -1,10 +1,7 @@
 import { BaseMetric } from './BaseMetric';
 import { MetricService } from '../MetricService';
 import { Injectable } from '@nestjs/common';
-import {
-  AggregationTemporality,
-  ObservableGauge,
-} from '@opentelemetry/api-metrics';
+import { ObservableGauge } from '@opentelemetry/api-metrics';
 
 @Injectable()
 export class ProcessStartTimeMetric implements BaseMetric {
@@ -20,17 +17,13 @@ export class ProcessStartTimeMetric implements BaseMetric {
 
   async inject(): Promise<void> {
     this.observableGauge = this.metricService
-      .getProvider()
-      .getMeter('default')
-      .createObservableGauge(
-        this.name,
-        {
-          description: this.description,
-          aggregationTemporality:
-            AggregationTemporality.AGGREGATION_TEMPORALITY_DELTA,
-        },
-        (observerResult) => this.observerCallback(observerResult),
-      );
+      .getMeter()
+      .createObservableGauge(this.name, {
+        description: this.description,
+      });
+    this.observableGauge.addCallback((observerResult) =>
+      this.observerCallback(observerResult),
+    );
   }
 
   private observerCallback(observerResult) {

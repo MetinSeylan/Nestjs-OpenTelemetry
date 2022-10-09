@@ -2,7 +2,6 @@ import { Test } from '@nestjs/testing';
 import { OpenTelemetryModule } from '../../OpenTelemetryModule';
 import { Controller, Get } from '@nestjs/common';
 import { HttpRequestDurationSeconds } from '../Metrics/Http/HttpRequestDurationSeconds';
-import { AlwaysOnSampler } from '@opentelemetry/core';
 import waitForExpect from 'wait-for-expect';
 import * as request from 'supertest';
 
@@ -10,9 +9,6 @@ describe('Metric Http Test', () => {
   const exporter = jest.fn();
   const sdkModule = OpenTelemetryModule.forRoot({
     metricAutoObservers: [HttpRequestDurationSeconds],
-    metricExporter: { export: exporter, shutdown: jest.fn() },
-    metricInterval: 100,
-    sampler: new AlwaysOnSampler(),
   });
 
   beforeEach(() => {

@@ -14,9 +14,7 @@ export * from './Metric/Metrics/ActiveHandlesTotalMetric';
 export * from './Metric/Metrics/ProcessMaxFdsMetric';
 export * from './Metric/Metrics/ProcessStartTimeMetric';
 export * from './Metric/Metrics/ProcessOpenFdsMetric';
-export * from './Metric/Metrics/ResourceMetric';
 export * from './Metric/MetricService';
-export * from './Metric/NoopMetricExporter';
 
 // Trace
 export * from './Trace/Decorators/Span';

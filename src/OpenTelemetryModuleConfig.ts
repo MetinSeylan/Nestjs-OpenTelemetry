@@ -6,7 +6,6 @@ import { ControllerInjector } from './Trace/Injectors/ControllerInjector';
 import { GuardInjector } from './Trace/Injectors/GuardInjector';
 import { EventEmitterInjector } from './Trace/Injectors/EventEmitterInjector';
 import { ScheduleInjector } from './Trace/Injectors/ScheduleInjector';
-import { ResourceMetric } from './Metric/Metrics/ResourceMetric';
 import { PipeInjector } from './Trace/Injectors/PipeInjector';
 import { LoggerInjector } from './Trace/Injectors/LoggerInjector';
 import { ProcessStartTimeMetric } from './Metric/Metrics/ProcessStartTimeMetric';
@@ -25,14 +24,13 @@ import { CompositePropagator } from '@opentelemetry/core';
 import { JaegerPropagator } from '@opentelemetry/propagator-jaeger';
 import { B3InjectEncoding, B3Propagator } from '@opentelemetry/propagator-b3';
 
-export interface OpenTelemetryModuleConfig extends Partial<NodeSDKConfiguration> {
-  applicationName?: string;
+export interface OpenTelemetryModuleConfig
+  extends Partial<NodeSDKConfiguration> {
   traceAutoInjectors?: Provider<Injector>[];
   metricAutoObservers?: Provider<BaseMetric>[];
 }
 
 export const OpenTelemetryModuleDefaultConfig = {
-  applicationName: 'UNDEFINED',
   traceAutoInjectors: [
     ControllerInjector,
     GuardInjector,
@@ -42,7 +40,6 @@ export const OpenTelemetryModuleDefaultConfig = {
     LoggerInjector,
   ],
   metricAutoObservers: [
-    ResourceMetric,
     ProcessStartTimeMetric,
     ProcessOpenFdsMetric,
     ProcessMaxFdsMetric,

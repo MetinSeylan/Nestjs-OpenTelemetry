@@ -10,7 +10,6 @@ import { MetricOptions } from '@opentelemetry/api-metrics';
 @Injectable()
 export class HttpRequestDurationSeconds implements BaseMetric {
   private static metricOptions: Partial<MetricOptions> = {
-    boundaries: [0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10],
     valueType: ValueType.DOUBLE,
   };
 
@@ -22,13 +21,10 @@ export class HttpRequestDurationSeconds implements BaseMetric {
   constructor(private readonly metricService: MetricService) {}
 
   async inject(): Promise<void> {
-    this.histogram = this.metricService
-      .getProvider()
-      .getMeter('default')
-      .createHistogram(this.name, {
-        ...HttpRequestDurationSeconds.metricOptions,
-        description: this.description,
-      });
+    this.histogram = this.metricService.getMeter().createHistogram(this.name, {
+      ...HttpRequestDurationSeconds.metricOptions,
+      description: this.description,
+    });
   }
 
   @OnEvent(ProducerEvent.HTTP)

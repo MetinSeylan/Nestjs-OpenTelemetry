@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Constants } from '../Constants';
 import { OpenTelemetryModuleConfig } from '../OpenTelemetryModuleConfig';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { Meter, MeterProvider } from '@opentelemetry/sdk-metrics-base';
+import { MeterProvider } from '@opentelemetry/sdk-metrics';
+import { Meter } from '@opentelemetry/api-metrics';
 
 @Injectable()
 export class MetricService {
@@ -13,11 +14,10 @@ export class MetricService {
     private readonly sdkConfig: OpenTelemetryModuleConfig,
     @Inject(Constants.SDK) private readonly nodeSDK: NodeSDK,
   ) {
-    this.meterProvider = new MeterProvider({
-      // @ts-ignore
-      exporter: sdkConfig.metricExporter,
-      interval: sdkConfig.metricInterval,
-    });
+    this.meterProvider = new MeterProvider();
+    if (sdkConfig.metricReader) {
+      this.meterProvider.addMetricReader(sdkConfig.metricReader);
+    }
   }
 
   public getMeter(): Meter {
@@ -34,10 +34,6 @@ export class MetricService {
     delete attr['process.executable.name'];
     delete attr['process.pid'];
     delete attr['process.command_line'];
-
-    if (!attr['application']) {
-      attr['application'] = this.sdkConfig.applicationName;
-    }
 
     return attr;
   }

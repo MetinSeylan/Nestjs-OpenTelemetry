@@ -20,7 +20,6 @@ import { MetricGrpcEventProducer } from './Metric/Interceptors/Grpc/MetricGrpcEv
 import { MetricRabbitMQEventProducer } from './Metric/Interceptors/RabbitMQ/MetricRabbitMQEventProducer';
 import { DecoratorObserverMetricInjector } from './Metric/Injectors/DecoratorObserverMetricInjector';
 import { DecoratorCounterMetricInjector } from './Metric/Injectors/DecoratorCounterMetricInjector';
-import { Meter } from '@opentelemetry/sdk-metrics-base';
 import { Tracer } from '@opentelemetry/sdk-trace-base';
 
 export class OpenTelemetryModule implements NestModule {
@@ -53,7 +52,6 @@ export class OpenTelemetryModule implements NestModule {
         DecoratorCounterMetricInjector,
         this.buildProvider(configuration),
         this.buildInjectors(configuration),
-        this.buildMeter(),
         this.buildTracer(),
         {
           provide: Constants.SDK_CONFIG,
@@ -64,7 +62,7 @@ export class OpenTelemetryModule implements NestModule {
           useClass: MetricInterceptor,
         },
       ],
-      exports: [TraceService, MetricService, Meter, Tracer],
+      exports: [TraceService, MetricService, Tracer],
     };
   }
 
@@ -122,7 +120,6 @@ export class OpenTelemetryModule implements NestModule {
         MetricRabbitMQEventProducer,
         this.buildAsyncProvider(),
         this.buildAsyncInjectors(),
-        this.buildMeter(),
         this.buildTracer(),
         {
           provide: Constants.SDK_CONFIG,
@@ -134,7 +131,7 @@ export class OpenTelemetryModule implements NestModule {
           useClass: MetricInterceptor,
         },
       ],
-      exports: [TraceService, MetricService, Meter, Tracer],
+      exports: [TraceService, MetricService, Tracer],
     };
   }
 
@@ -189,14 +186,6 @@ export class OpenTelemetryModule implements NestModule {
         return {};
       },
       inject: [Constants.SDK_CONFIG, ModuleRef],
-    };
-  }
-
-  private static buildMeter() {
-    return {
-      provide: Meter,
-      useFactory: (metricService: MetricService) => metricService.getMeter(),
-      inject: [MetricService],
     };
   }
 

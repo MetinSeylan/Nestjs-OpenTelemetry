@@ -19,15 +19,13 @@ export class ActiveHandlesMetric implements BaseMetric {
     }
 
     this.observableGauge = this.metricService
-      .getProvider()
-      .getMeter('default')
-      .createObservableGauge(
-        this.name,
-        {
-          description: this.description,
-        },
-        (observerResult) => this.observerCallback(observerResult),
-      );
+      .getMeter()
+      .createObservableGauge(this.name, {
+        description: this.description,
+      });
+    this.observableGauge.addCallback((observerResult) =>
+      this.observerCallback(observerResult),
+    );
   }
 
   private observerCallback(observerResult) {

@@ -19,15 +19,13 @@ export class ProcessOpenFdsMetric implements BaseMetric {
     }
 
     this.observableBase = this.metricService
-      .getProvider()
-      .getMeter('default')
-      .createObservableGauge(
-        this.name,
-        {
-          description: this.description,
-        },
-        (observerResult) => this.observerCallback(observerResult),
-      );
+      .getMeter()
+      .createObservableGauge(this.name, {
+        description: this.description,
+      });
+    this.observableBase.addCallback((observerResult) =>
+      this.observerCallback(observerResult),
+    );
   }
 
   private observerCallback(observerResult) {
