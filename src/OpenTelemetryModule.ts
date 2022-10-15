@@ -2,7 +2,6 @@ import { DynamicModule } from '@nestjs/common';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceService } from './Trace/TraceService';
 import { Constants } from './Constants';
-import { MetricService } from './Metric/MetricService';
 import {
   OpenTelemetryModuleConfig,
   OpenTelemetryModuleDefaultConfig,
@@ -28,7 +27,6 @@ export class OpenTelemetryModule {
       providers: [
         ...injectors,
         TraceService,
-        MetricService,
         OpenTelemetryService,
         DecoratorInjector,
         this.buildProvider(configuration),
@@ -39,7 +37,7 @@ export class OpenTelemetryModule {
           useValue: configuration,
         },
       ],
-      exports: [TraceService, MetricService, Tracer],
+      exports: [TraceService, Tracer],
     };
   }
 
@@ -84,7 +82,6 @@ export class OpenTelemetryModule {
       imports: [...configuration?.imports, EventEmitterModule.forRoot()],
       providers: [
         TraceService,
-        MetricService,
         OpenTelemetryService,
         this.buildAsyncProvider(),
         this.buildAsyncInjectors(),
@@ -95,7 +92,7 @@ export class OpenTelemetryModule {
           inject: configuration.inject,
         },
       ],
-      exports: [TraceService, MetricService, Tracer],
+      exports: [TraceService, Tracer],
     };
   }
 

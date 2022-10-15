@@ -3,9 +3,6 @@ export * from './OpenTelemetryModule';
 export * from './OpenTelemetryModuleAsyncOption';
 export * from './OpenTelemetryModuleConfig';
 
-// Metrics
-export * from './Metric/MetricService';
-
 // Trace
 export * from './Trace/Decorators/Span';
 export * from './Trace/TraceService';
