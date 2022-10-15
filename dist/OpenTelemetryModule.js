@@ -38,9 +38,14 @@ class OpenTelemetryModule {
         return {
             provide: Constants_1.Constants.SDK,
             useFactory: async () => {
-                const sdk = new sdk_node_1.NodeSDK(configuration);
-                await sdk.start();
-                return sdk;
+                try {
+                    const sdk = new sdk_node_1.NodeSDK(configuration);
+                    await sdk.start();
+                    return sdk;
+                }
+                catch (e) {
+                    console.error(e);
+                }
             },
         };
     }
