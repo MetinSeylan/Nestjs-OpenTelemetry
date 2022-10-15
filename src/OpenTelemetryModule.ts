@@ -28,7 +28,7 @@ export class OpenTelemetryModule {
         ...injectors,
         TraceService,
         OpenTelemetryService,
-        DecoratorInjector,
+        //DecoratorInjector,
         this.buildProvider(configuration),
         this.buildInjectors(configuration),
         this.buildTracer(),
@@ -66,7 +66,7 @@ export class OpenTelemetryModule {
         }
       },
       inject: [
-        DecoratorInjector,
+        //DecoratorInjector,
         // eslint-disable-next-line @typescript-eslint/ban-types
         ...(injectors as Function[]),
       ],
