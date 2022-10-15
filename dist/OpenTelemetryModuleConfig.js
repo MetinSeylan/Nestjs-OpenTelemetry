@@ -29,7 +29,7 @@ exports.OpenTelemetryModuleDefaultConfig = {
         PipeInjector_1.PipeInjector,
         LoggerInjector_1.LoggerInjector,
     ],
-    autoDetectResources: true,
+    autoDetectResources: false,
     resourceDetectors: [
         resource_detector_alibaba_cloud_1.alibabaCloudEcsDetector,
         resource_detector_aws_1.awsEc2Detector,

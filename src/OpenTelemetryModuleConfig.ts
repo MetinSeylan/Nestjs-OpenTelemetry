@@ -35,7 +35,7 @@ export const OpenTelemetryModuleDefaultConfig = {
     PipeInjector,
     LoggerInjector,
   ],
-  autoDetectResources: true,
+  autoDetectResources: false,
   resourceDetectors: [
     alibabaCloudEcsDetector,
     awsEc2Detector,
