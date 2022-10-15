@@ -3,7 +3,6 @@ import { Constants } from '../Constants';
 import { OpenTelemetryModuleConfig } from '../OpenTelemetryModuleConfig';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { MeterProvider } from '@opentelemetry/sdk-metrics';
-import { Meter } from '@opentelemetry/api-metrics';
 
 @Injectable()
 export class MetricService {
@@ -18,10 +17,6 @@ export class MetricService {
     if (sdkConfig.metricReader) {
       this.meterProvider.addMetricReader(sdkConfig.metricReader);
     }
-  }
-
-  public getMeter(): Meter {
-    return this.meterProvider.getMeter('default');
   }
 
   public getProvider(): MeterProvider {
