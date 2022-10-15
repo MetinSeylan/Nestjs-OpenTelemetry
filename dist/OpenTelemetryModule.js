@@ -22,7 +22,6 @@ class OpenTelemetryModule {
                 ...injectors,
                 TraceService_1.TraceService,
                 OpenTelemetryService_1.OpenTelemetryService,
-                DecoratorInjector_1.DecoratorInjector,
                 this.buildProvider(configuration),
                 this.buildInjectors(configuration),
                 this.buildTracer(),
@@ -55,7 +54,6 @@ class OpenTelemetryModule {
                 }
             },
             inject: [
-                DecoratorInjector_1.DecoratorInjector,
                 ...injectors,
             ],
         };
