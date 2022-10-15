@@ -29,7 +29,15 @@ It also includes auto trace and metric instrumentations for some popular Nestjs 
   - ~~[Metric Providers](#metric-providers)~~
   - ~~[Auto Metric Observers](#auto-metric-observers)~~
 
-OpenTelemetry Metrics currently experimental. So, this library doesn't support metric decorators and Auto Observers until it's stable. but if you want to use it, you can use `MetricService` for now.
+OpenTelemetry Metrics currently experimental. So, this library doesn't support metric decorators and Auto Observers until it's stable. but if you want to use it, you can use OpenTelemetry API directly.
+
+Competability table for Nestjs versions.
+
+| Nestjs | Nestjs-OpenTelemetry |
+|--------|----------------------|
+| 9.x    | 3.x.x                |
+| 8.x    | 2.x.x                |
+
 
 ### Installation 
 ``` bash
@@ -50,14 +58,32 @@ import { OpenTelemetryModule } from '@metinseylan/nestjs-opentelemetry';
 })
 export class AppModule {}
 ```
+
+Async configuration example
+```ts
+import { OpenTelemetryModule } from '@metinseylan/nestjs-opentelemetry';
+import {ConfigModule, ConfigService} from '@nestjs/config';
+
+@Module({
+  imports: [
+    OpenTelemetryModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        serviceName: configService.get('SERVICE_NAME'),
+      }),
+      inject: [ConfigService]
+    })
+  ]
+})
+export class AppModule {}
+```
 #### Default Parameters
 | key                 | value                                                                                                                                                                                                                    | description                                                                                                                                                                                                                                                               |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | traceAutoInjectors  | ControllerInjector, GuardInjector, EventEmitterInjector, ScheduleInjector, PipeInjector, LoggerInjector                                                                                                                  | default auto trace instrumentations                                                                                                                                                                                                                                       |
-| metricAutoObservers | ResourceMetric, ProcessStartTimeMetric, ProcessOpenFdsMetric, ProcessMaxFdsMetric, ActiveHandlesMetric, ActiveHandlesTotalMetric, HttpRequestDurationSeconds, GrpcRequestDurationSeconds, RabbitMqRequestDurationSeconds | default auto metric collectors                                                                                                                                                                                                                                            |
-| autoDetectResources | true                                                                                                                                                                                                                     | inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration">NodeSDKConfiguration</a>                                 |
+| metricAutoObservers | ResourceMetric, ProcessStartTimeMetric, ProcessOpenFdsMetric, ProcessMaxFdsMetric, ActiveHandlesMetric, ActiveHandlesTotalMetric, HttpRequestDurationSeconds, GrpcRequestDurationSeconds, RabbitMqRequestDurationSeconds | default auto metric collectors                                                                                                                                                                                                                                            |                                                                                                                                                                                                                 | inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration">NodeSDKConfiguration</a>                                 |
 | contextManager      | AsyncLocalStorageContextManager                                                                                                                                                                                          | default trace context manager inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a> |
-| instrumentations    | HttpInstrumentation                                                                                                                                                                                                      | default instrumentations inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>      |
+| instrumentations    | AutoInstrumentations                                                                                                                                                                                                     | default instrumentations inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>      |
 | spanProcessor       | NoopSpanProcessor                                                                                                                                                                                                        | default spanProcessor inherited from  <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>        |
 | textMapPropagator   | JaegerPropagator, B3Propagator                                                                                                                                                                                           | default textMapPropagator inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>     |
 
