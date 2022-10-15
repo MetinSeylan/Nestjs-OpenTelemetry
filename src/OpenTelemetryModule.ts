@@ -1,4 +1,4 @@
-import { DynamicModule, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { DynamicModule } from '@nestjs/common';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceService } from './Trace/TraceService';
 import { Constants } from './Constants';
@@ -11,55 +11,32 @@ import { FactoryProvider } from '@nestjs/common/interfaces/modules/provider.inte
 import { OpenTelemetryService } from './OpenTelemetryService';
 import { OpenTelemetryModuleAsyncOption } from './OpenTelemetryModuleAsyncOption';
 import { DecoratorInjector } from './Trace/Injectors/DecoratorInjector';
-import { APP_INTERCEPTOR, ModuleRef } from '@nestjs/core';
-import { MetricHttpMiddleware } from './Metric/Interceptors/Http/MetricHttpMiddleware';
-import { MetricInterceptor } from './Metric/Interceptors/MetricInterceptor';
+import { ModuleRef } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { MetricHttpEventProducer } from './Metric/Interceptors/Http/MetricHttpEventProducer';
-import { MetricGrpcEventProducer } from './Metric/Interceptors/Grpc/MetricGrpcEventProducer';
-import { MetricRabbitMQEventProducer } from './Metric/Interceptors/RabbitMQ/MetricRabbitMQEventProducer';
-import { DecoratorObserverMetricInjector } from './Metric/Injectors/DecoratorObserverMetricInjector';
-import { DecoratorCounterMetricInjector } from './Metric/Injectors/DecoratorCounterMetricInjector';
 import { Tracer } from '@opentelemetry/sdk-trace-base';
 
-export class OpenTelemetryModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(MetricHttpMiddleware).forRoutes('*');
-  }
-
+export class OpenTelemetryModule {
   static async forRoot(
     configuration: Partial<OpenTelemetryModuleConfig> = {},
   ): Promise<DynamicModule> {
     configuration = { ...OpenTelemetryModuleDefaultConfig, ...configuration };
     const injectors = configuration?.traceAutoInjectors ?? [];
-    const metrics = configuration?.metricAutoObservers ?? [];
     return {
       global: true,
       module: OpenTelemetryModule,
       imports: [EventEmitterModule.forRoot()],
       providers: [
         ...injectors,
-        ...metrics,
         TraceService,
         MetricService,
         OpenTelemetryService,
-        MetricHttpMiddleware,
-        MetricHttpEventProducer,
-        MetricGrpcEventProducer,
-        MetricRabbitMQEventProducer,
         DecoratorInjector,
-        DecoratorObserverMetricInjector,
-        DecoratorCounterMetricInjector,
         this.buildProvider(configuration),
         this.buildInjectors(configuration),
         this.buildTracer(),
         {
           provide: Constants.SDK_CONFIG,
           useValue: configuration,
-        },
-        {
-          provide: APP_INTERCEPTOR,
-          useClass: MetricInterceptor,
         },
       ],
       exports: [TraceService, MetricService, Tracer],
@@ -83,7 +60,6 @@ export class OpenTelemetryModule implements NestModule {
     configuration?: Partial<OpenTelemetryModuleConfig>,
   ): FactoryProvider {
     const injectors = configuration?.traceAutoInjectors ?? [];
-    const metrics = configuration?.metricAutoObservers ?? [];
     return {
       provide: Constants.SDK_INJECTORS,
       useFactory: async (...injectors) => {
@@ -93,12 +69,8 @@ export class OpenTelemetryModule implements NestModule {
       },
       inject: [
         DecoratorInjector,
-        DecoratorObserverMetricInjector,
-        DecoratorCounterMetricInjector,
         // eslint-disable-next-line @typescript-eslint/ban-types
         ...(injectors as Function[]),
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        ...(metrics as Function[]),
       ],
     };
   }
@@ -114,10 +86,6 @@ export class OpenTelemetryModule implements NestModule {
         TraceService,
         MetricService,
         OpenTelemetryService,
-        MetricHttpMiddleware,
-        MetricHttpEventProducer,
-        MetricGrpcEventProducer,
-        MetricRabbitMQEventProducer,
         this.buildAsyncProvider(),
         this.buildAsyncInjectors(),
         this.buildTracer(),
@@ -125,10 +93,6 @@ export class OpenTelemetryModule implements NestModule {
           provide: Constants.SDK_CONFIG,
           useFactory: configuration.useFactory,
           inject: configuration.inject,
-        },
-        {
-          provide: APP_INTERCEPTOR,
-          useClass: MetricInterceptor,
         },
       ],
       exports: [TraceService, MetricService, Tracer],
@@ -156,31 +120,13 @@ export class OpenTelemetryModule implements NestModule {
         const injectors =
           config.traceAutoInjectors ??
           OpenTelemetryModuleDefaultConfig.traceAutoInjectors;
-        const metrics =
-          config.metricAutoObservers ??
-          OpenTelemetryModuleDefaultConfig.metricAutoObservers;
 
         const decoratorInjector = await moduleRef.create(DecoratorInjector);
         await decoratorInjector.inject();
 
-        const decoratorObserverMetricInjector = await moduleRef.create(
-          DecoratorObserverMetricInjector,
-        );
-        await decoratorObserverMetricInjector.inject();
-
-        const decoratorCounterMetricInjector = await moduleRef.create(
-          DecoratorCounterMetricInjector,
-        );
-        await decoratorCounterMetricInjector.inject();
-
         for await (const injector of injectors) {
           const created = await moduleRef.create(injector);
           if (created['inject']) await created.inject();
-        }
-
-        for await (const metric of metrics) {
-          const createdMetric = await moduleRef.create(metric);
-          if (createdMetric['inject']) await createdMetric.inject();
         }
 
         return {};

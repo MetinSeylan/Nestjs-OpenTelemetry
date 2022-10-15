@@ -45,12 +45,16 @@ export class GuardInjector extends BaseTraceInjector implements Injector {
             (guard) => {
               const prototype = guard['prototype'] ?? guard;
               const traceName = `Guard->${controller.name}.${controller.metatype.prototype[key].name}.${prototype.constructor.name}`;
-              prototype.canActivate = this.wrap(prototype.canActivate, traceName, {
-                controller: controller.name,
-                guard: prototype.constructor.name,
-                method: controller.metatype.prototype[key].name,
-                scope: 'CONTROLLER_METHOD',
-              });
+              prototype.canActivate = this.wrap(
+                prototype.canActivate,
+                traceName,
+                {
+                  controller: controller.name,
+                  guard: prototype.constructor.name,
+                  method: controller.metatype.prototype[key].name,
+                  scope: 'CONTROLLER_METHOD',
+                },
+              );
               Object.assign(prototype, this);
               this.loggerService.log(
                 `Mapped ${traceName}`,

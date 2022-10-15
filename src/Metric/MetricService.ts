@@ -27,14 +27,4 @@ export class MetricService {
   public getProvider(): MeterProvider {
     return this.meterProvider;
   }
-
-  public getLabels(): Record<string, any> {
-    const attr = this.nodeSDK['_resource']?.attributes ?? {};
-    delete attr['process.command'];
-    delete attr['process.executable.name'];
-    delete attr['process.pid'];
-    delete attr['process.command_line'];
-
-    return attr;
-  }
 }
