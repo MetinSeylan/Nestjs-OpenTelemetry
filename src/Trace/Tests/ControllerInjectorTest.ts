@@ -135,11 +135,10 @@ describe('Tracing Controller Injector Test', () => {
     const app = context.createNestApplication();
     await app.init();
 
-    //when
     // when
     await request(app.getHttpServer()).get('/hello').send().expect(200);
 
-    //then
+    // then
     await waitForExpect(() =>
       expect(exporterSpy).toHaveBeenCalledWith(
         expect.objectContaining({

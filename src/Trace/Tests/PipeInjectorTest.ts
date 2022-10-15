@@ -29,6 +29,7 @@ describe('Tracing Pipe Injector Test', () => {
   it(`should trace global pipe`, async function () {
     // given
     class HelloPipe implements PipeTransform {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       async transform(value: any) {}
     }
     const context = await Test.createTestingModule({
@@ -65,6 +66,7 @@ describe('Tracing Pipe Injector Test', () => {
   it(`should trace controller pipe`, async function () {
     // given
     class HelloPipe implements PipeTransform {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       async transform(value: any, metadata: ArgumentMetadata) {}
     }
 

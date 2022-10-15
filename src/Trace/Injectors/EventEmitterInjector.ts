@@ -2,7 +2,6 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Injector } from './Injector';
 import { ModulesContainer } from '@nestjs/core';
 import { BaseTraceInjector } from './BaseTraceInjector';
-import { ProducerEvent } from '../../Metric/Interceptors/ProducerEvent';
 
 @Injectable()
 export class EventEmitterInjector
@@ -51,13 +50,10 @@ export class EventEmitterInjector
   }
 
   private isEventConsumer(prototype): boolean {
-    const meta = Reflect.getMetadata(
+    return Reflect.getMetadata(
       EventEmitterInjector.EVENT_LISTENER_METADATA,
       prototype,
     );
-    if (!meta) return false;
-
-    return !Object.values(ProducerEvent).includes(meta.event);
   }
 
   private getEventName(prototype): string {

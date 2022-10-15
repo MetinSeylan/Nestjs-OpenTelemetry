@@ -14,7 +14,6 @@ exports.EventEmitterInjector = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const BaseTraceInjector_1 = require("./BaseTraceInjector");
-const ProducerEvent_1 = require("../../Metric/Interceptors/ProducerEvent");
 let EventEmitterInjector = EventEmitterInjector_1 = class EventEmitterInjector extends BaseTraceInjector_1.BaseTraceInjector {
     modulesContainer;
     static EVENT_LISTENER_METADATA = 'EVENT_LISTENER_METADATA';
@@ -43,10 +42,7 @@ let EventEmitterInjector = EventEmitterInjector_1 = class EventEmitterInjector e
         }
     }
     isEventConsumer(prototype) {
-        const meta = Reflect.getMetadata(EventEmitterInjector_1.EVENT_LISTENER_METADATA, prototype);
-        if (!meta)
-            return false;
-        return !Object.values(ProducerEvent_1.ProducerEvent).includes(meta.event);
+        return Reflect.getMetadata(EventEmitterInjector_1.EVENT_LISTENER_METADATA, prototype);
     }
     getEventName(prototype) {
         const metadata = Reflect.getMetadata(EventEmitterInjector_1.EVENT_LISTENER_METADATA, prototype);

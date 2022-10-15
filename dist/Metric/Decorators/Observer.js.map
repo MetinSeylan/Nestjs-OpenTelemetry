@@ -1,1 +1,0 @@
-{"version":3,"file":"Observer.js","sourceRoot":"","sources":["../../../src/Metric/Decorators/Observer.ts"],"names":[],"mappings":";;;AAAA,2CAA6C;AAC7C,+CAA4C;AAE5C,mDAAgD;AAEzC,MAAM,QAAQ,GAAG,CAAC,IAAa,EAAE,OAAuB,EAAE,EAAE,CACjE,IAAA,oBAAW,EAAC,qBAAS,CAAC,eAAe,EAAE;IACrC,IAAI;IACJ,OAAO;IACP,IAAI,EAAE,6BAAa,CAAC,QAAQ;CAC7B,CAAC,CAAC;AALQ,QAAA,QAAQ,YAKhB"}

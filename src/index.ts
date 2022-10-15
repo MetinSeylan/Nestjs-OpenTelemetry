@@ -3,21 +3,6 @@ export * from './OpenTelemetryModule';
 export * from './OpenTelemetryModuleAsyncOption';
 export * from './OpenTelemetryModuleConfig';
 
-// Metrics
-export * from './Metric/Decorators/Counter';
-export * from './Metric/Decorators/Observer';
-export * from './Metric/Metrics/Grpc/GrpcRequestDurationSeconds';
-export * from './Metric/Metrics/Http/HttpRequestDurationSeconds';
-export * from './Metric/Metrics/RabbitMQ/GrpcRequestDurationSeconds';
-export * from './Metric/Metrics/ActiveHandlesMetric';
-export * from './Metric/Metrics/ActiveHandlesTotalMetric';
-export * from './Metric/Metrics/ProcessMaxFdsMetric';
-export * from './Metric/Metrics/ProcessStartTimeMetric';
-export * from './Metric/Metrics/ProcessOpenFdsMetric';
-export * from './Metric/Metrics/ResourceMetric';
-export * from './Metric/MetricService';
-export * from './Metric/NoopMetricExporter';
-
 // Trace
 export * from './Trace/Decorators/Span';
 export * from './Trace/TraceService';

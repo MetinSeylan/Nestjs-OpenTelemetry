@@ -25,9 +25,19 @@ It also includes auto trace and metric instrumentations for some popular Nestjs 
   - [Distributed Logging with Trace ID](#distributed-logging-with-trace-id)
 - #### Metrics
   - [Setup](#metrics-1)
-  - [Decorators](#metric-decorators)
-  - [Metric Providers](#metric-providers)
-  - [Auto Metric Observers](#auto-metric-observers)
+  - ~~[Decorators](#metric-decorators)~~
+  - ~~[Metric Providers](#metric-providers)~~
+  - ~~[Auto Metric Observers](#auto-metric-observers)~~
+
+OpenTelemetry Metrics currently experimental. So, this library doesn't support metric decorators and Auto Observers until it's stable. but if you want to use it, you can use OpenTelemetry API directly.
+
+Competability table for Nestjs versions.
+
+| Nestjs | Nestjs-OpenTelemetry |
+|--------|----------------------|
+| 9.x    | 3.x.x                |
+| 8.x    | 2.x.x                |
+
 
 ### Installation 
 ``` bash
@@ -42,7 +52,26 @@ import { OpenTelemetryModule } from '@metinseylan/nestjs-opentelemetry';
 @Module({
   imports: [
     OpenTelemetryModule.forRoot({
-      applicationName: 'nestjs-opentelemetry-example',
+      serviceName: 'nestjs-opentelemetry-example',
+    })
+  ]
+})
+export class AppModule {}
+```
+
+Async configuration example
+```ts
+import { OpenTelemetryModule } from '@metinseylan/nestjs-opentelemetry';
+import {ConfigModule, ConfigService} from '@nestjs/config';
+
+@Module({
+  imports: [
+    OpenTelemetryModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        serviceName: configService.get('SERVICE_NAME'),
+      }),
+      inject: [ConfigService]
     })
   ]
 })
@@ -52,10 +81,9 @@ export class AppModule {}
 | key                 | value                                                                                                                                                                                                                    | description                                                                                                                                                                                                                                                               |
 |---------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | traceAutoInjectors  | ControllerInjector, GuardInjector, EventEmitterInjector, ScheduleInjector, PipeInjector, LoggerInjector                                                                                                                  | default auto trace instrumentations                                                                                                                                                                                                                                       |
-| metricAutoObservers | ResourceMetric, ProcessStartTimeMetric, ProcessOpenFdsMetric, ProcessMaxFdsMetric, ActiveHandlesMetric, ActiveHandlesTotalMetric, HttpRequestDurationSeconds, GrpcRequestDurationSeconds, RabbitMqRequestDurationSeconds | default auto metric collectors                                                                                                                                                                                                                                            |
-| autoDetectResources | true                                                                                                                                                                                                                     | inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration">NodeSDKConfiguration</a>                                 |
+| metricAutoObservers | ResourceMetric, ProcessStartTimeMetric, ProcessOpenFdsMetric, ProcessMaxFdsMetric, ActiveHandlesMetric, ActiveHandlesTotalMetric, HttpRequestDurationSeconds, GrpcRequestDurationSeconds, RabbitMqRequestDurationSeconds | default auto metric collectors                                                                                                                                                                                                                                            |                                                                                                                                                                                                                 | inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration">NodeSDKConfiguration</a>                                 |
 | contextManager      | AsyncLocalStorageContextManager                                                                                                                                                                                          | default trace context manager inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a> |
-| instrumentations    | HttpInstrumentation                                                                                                                                                                                                      | default instrumentations inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>      |
+| instrumentations    | AutoInstrumentations                                                                                                                                                                                                     | default instrumentations inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>      |
 | spanProcessor       | NoopSpanProcessor                                                                                                                                                                                                        | default spanProcessor inherited from  <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>        |
 | textMapPropagator   | JaegerPropagator, B3Propagator                                                                                                                                                                                           | default textMapPropagator inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>     |
 
@@ -205,8 +233,8 @@ import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 
 @Module({
   imports: [OpenTelemetryModule.forRoot({
-    applicationName: 'nestjs-opentelemetry-example',
-    metricExporter: new PrometheusExporter({
+    serviceName: 'nestjs-opentelemetry-example',
+    metricReader: new PrometheusExporter({
       endpoint: 'metrics',
       port: 9464,
     })
@@ -217,7 +245,7 @@ export class AppModule {}
 Now you can access Prometheus exporter with auto collected metrics [http://localhost:9464/metrics](http://localhost:9464/metrics).
 Also, you can find different exporters [here](https://opentelemetry.io/docs/js/exporters/)
 ***
-### Metric Decorators
+### Metric Decorators (Deprecated)
 If you need to observe simple block of function, you can use some basic decorators like `@Counter` and `@Observer`
 
 #### Counter
@@ -241,7 +269,7 @@ export class AppService {
 ```
 And of course, you can configure your decorator metric, the first parameter is "name" and the second one is [MetricOptions](https://github.com/open-telemetry/opentelemetry-js/blob/357ec92e95e03b4d2309c65ffb17d06105985628/experimental/packages/opentelemetry-api-metrics/src/types/Metric.ts#L29)
 
-#### Observer
+#### Observer (Deprecated)
 ```ts
 import {Injectable} from '@nestjs/common';
 import {Observer} from "./Observer";
@@ -259,7 +287,7 @@ export class AppService {
 ```
 `@Observer` decorator uses OpenTelemetry `ValueRecorder` metric. If you check Prometheus exporter, you will see metric and configuration parameters same as `@Counter`.
 ***
-### Metric Providers
+### Metric Providers (Deprecated)
 In advanced usage cases, you need to access the native OpenTelemetry Metric provider to access them from the Nestjs application context.
 
 ```ts
@@ -282,7 +310,7 @@ export class AppService {
 }
 ```
 ***
-### Auto Metric Observers
+### Auto Metric Observers (Deprecated)
 This library has extendable resource and protocol-specific Auto Observers. All of them come with default module configuration, which you can extend and configure.
 ```ts
 import { Module } from '@nestjs/common';
@@ -296,18 +324,17 @@ import {
 @Module({
   imports: [
     OpenTelemetryModule.forRoot({
-      applicationName: 'nestjs-opentelemetry-example',
+      serviceName: 'nestjs-opentelemetry-example',
       metricAutoObservers: [
         HttpRequestDurationSeconds.build({
           boundaries: [20, 30, 100],
         }),
         ActiveHandlesMetric,
       ],
-      metricExporter: new PrometheusExporter({
+      metricReader: new PrometheusExporter({
         endpoint: 'metrics',
         port: 9464,
       }),
-      metricInterval: 1000,
     }),
   ],
 })
@@ -315,7 +342,7 @@ export class AppModule {}
 ```
 `.build` function takes [MetricOptions](https://github.com/open-telemetry/opentelemetry-js/blob/357ec92e95e03b4d2309c65ffb17d06105985628/experimental/packages/opentelemetry-api-metrics/src/types/Metric.ts#L29) as a parameter.
 
-#### List Of Auto Observers
+#### List Of Auto Observers (Deprecated)
 
 | Metric Observer Provider         | Description                                                                                 | Configurable |
 |----------------------------------|---------------------------------------------------------------------------------------------|--------------|
@@ -340,7 +367,7 @@ export class AppModule {}
 
 ***
 
-### Lets Combine All of them
+### Let's Combine All of them
 ```ts
 import { Module } from '@nestjs/common';
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
@@ -351,12 +378,11 @@ import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 @Module({
   imports: [
     OpenTelemetryModule.forRoot({
-      applicationName: 'nestjs-opentelemetry-example',
-      metricExporter: new PrometheusExporter({
+      serviceName: 'nestjs-opentelemetry-example',
+      metricReader: new PrometheusExporter({
         endpoint: 'metrics',
         port: 9464,
       }),
-      metricInterval: 1000,
       spanProcessor: new SimpleSpanProcessor(
         new ZipkinExporter({
           url: 'your-zipkin-url',
