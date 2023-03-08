@@ -25,7 +25,7 @@ let EventEmitterInjector = EventEmitterInjector_1 = class EventEmitterInjector e
     inject() {
         const providers = this.getProviders();
         for (const provider of providers) {
-            const keys = this.metadataScanner.getAllFilteredMethodNames(provider.metatype.prototype);
+            const keys = this.metadataScanner.getAllMethodNames(provider.metatype.prototype);
             for (const key of keys) {
                 if (!this.isDecorated(provider.metatype.prototype[key]) &&
                     !this.isAffected(provider.metatype.prototype[key]) &&
@@ -46,7 +46,7 @@ let EventEmitterInjector = EventEmitterInjector_1 = class EventEmitterInjector e
     }
     getEventName(prototype) {
         const metadata = Reflect.getMetadata(EventEmitterInjector_1.EVENT_LISTENER_METADATA, prototype);
-        return metadata.event;
+        return metadata[0].event;
     }
 };
 EventEmitterInjector = EventEmitterInjector_1 = __decorate([
