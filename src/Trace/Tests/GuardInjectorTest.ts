@@ -1,13 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { OpenTelemetryModule } from '../../OpenTelemetryModule';
 import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import {
-  CanActivate,
-  Controller,
-  ExecutionContext,
-  Get,
-  UseGuards,
-} from '@nestjs/common';
+import { CanActivate, Controller, Get, UseGuards } from '@nestjs/common';
 import * as request from 'supertest';
 import { GuardInjector } from '../Injectors/GuardInjector';
 import { APP_GUARD } from '@nestjs/core';
@@ -30,7 +24,7 @@ describe('Tracing Guard Injector Test', () => {
   it(`should trace guarded controller`, async () => {
     // given
     class VeyselEfendi implements CanActivate {
-      canActivate(context: ExecutionContext) {
+      canActivate() {
         return true;
       }
     }
@@ -64,7 +58,7 @@ describe('Tracing Guard Injector Test', () => {
   it(`should trace guarded controller method`, async () => {
     // given
     class VeyselEfendi implements CanActivate {
-      canActivate(context: ExecutionContext) {
+      canActivate() {
         return true;
       }
     }
@@ -100,7 +94,7 @@ describe('Tracing Guard Injector Test', () => {
   it(`should trace guarded and decorated controller method`, async () => {
     // given
     class VeyselEfendi implements CanActivate {
-      canActivate(context: ExecutionContext) {
+      canActivate() {
         return true;
       }
     }
@@ -137,7 +131,7 @@ describe('Tracing Guard Injector Test', () => {
   it(`should trace global guard`, async () => {
     // given
     class VeyselEfendi implements CanActivate {
-      canActivate(context: ExecutionContext) {
+      canActivate() {
         return true;
       }
     }

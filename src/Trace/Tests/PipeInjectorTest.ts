@@ -1,13 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { OpenTelemetryModule } from '../../OpenTelemetryModule';
 import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import {
-  ArgumentMetadata,
-  Controller,
-  Get,
-  PipeTransform,
-  UsePipes,
-} from '@nestjs/common';
+import { Controller, Get, PipeTransform, UsePipes } from '@nestjs/common';
 import { PipeInjector } from '../Injectors/PipeInjector';
 import { PIPES_METADATA } from '@nestjs/common/constants';
 import { APP_PIPE } from '@nestjs/core';
@@ -30,7 +24,7 @@ describe('Tracing Pipe Injector Test', () => {
     // given
     class HelloPipe implements PipeTransform {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      async transform(value: any) {}
+      async transform() {}
     }
     const context = await Test.createTestingModule({
       imports: [sdkModule],
@@ -67,7 +61,7 @@ describe('Tracing Pipe Injector Test', () => {
     // given
     class HelloPipe implements PipeTransform {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      async transform(value: any, metadata: ArgumentMetadata) {}
+      async transform() {}
     }
 
     @Controller('hello')

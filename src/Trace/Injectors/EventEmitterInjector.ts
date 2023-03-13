@@ -20,7 +20,7 @@ export class EventEmitterInjector
     const providers = this.getProviders();
 
     for (const provider of providers) {
-      const keys = this.metadataScanner.getAllFilteredMethodNames(
+      const keys = this.metadataScanner.getAllMethodNames(
         provider.metatype.prototype,
       );
 
@@ -57,10 +57,10 @@ export class EventEmitterInjector
   }
 
   private getEventName(prototype): string {
-    const metadata = Reflect.getMetadata(
+    const metadata: Array<{ event: string }> = Reflect.getMetadata(
       EventEmitterInjector.EVENT_LISTENER_METADATA,
       prototype,
     );
-    return metadata.event;
+    return metadata[0].event;
   }
 }
