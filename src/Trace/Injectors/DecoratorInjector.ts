@@ -20,19 +20,14 @@ export class DecoratorInjector extends BaseTraceInjector implements Injector {
     const providers = this.getProviders();
 
     for (const provider of providers) {
-      if (this.isDecorated(provider.metatype)) {
-        throw new Error(
-          `@Span decorator not used with @Injectable provider class. Class: ${provider.name}`,
-        );
-      }
-
       const keys = this.metadataScanner.getAllMethodNames(
         provider.metatype.prototype,
       );
 
       for (const key of keys) {
         if (
-          this.isDecorated(provider.metatype.prototype[key]) &&
+          (this.isDecorated(provider.metatype) ||
+            this.isDecorated(provider.metatype.prototype[key])) &&
           !this.isAffected(provider.metatype.prototype[key])
         ) {
           provider.metatype.prototype[key] = this.wrap(
