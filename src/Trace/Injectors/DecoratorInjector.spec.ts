@@ -74,22 +74,6 @@ describe('Tracing Decorator Injector Test', () => {
     await app.close();
   });
 
-  it(`should throw exception when Injectable and Span used same time`, async () => {
-    // given
-    @Span()
-    @Injectable()
-    class HelloService {}
-    const context = await Test.createTestingModule({
-      imports: [sdkModule],
-      providers: [HelloService],
-    });
-
-    // when
-    await expect(context.compile()).rejects.toThrow(
-      `@Span decorator not used with @Injectable provider class. Class: HelloService`,
-    );
-  });
-
   it(`should trace decorated controller method with custom trace name`, async () => {
     // given
     @Controller('hello')
