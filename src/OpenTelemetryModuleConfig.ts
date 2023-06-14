@@ -16,6 +16,9 @@ import { B3InjectEncoding, B3Propagator } from '@opentelemetry/propagator-b3';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { containerDetector } from '@opentelemetry/resource-detector-container';
 
+import { Span } from '@opentelemetry/api';
+import { ClientRequest } from 'http';
+
 export interface OpenTelemetryModuleConfig
   extends Partial<NodeSDKConfiguration> {
   traceAutoInjectors?: Provider<Injector>[];
@@ -37,7 +40,35 @@ export const OpenTelemetryModuleDefaultConfig = {
   resource: new Resource({
     lib: '@overbit/opentelemetry-nestjs',
   }),
-  instrumentations: [getNodeAutoInstrumentations()],
+  instrumentations: [
+    getNodeAutoInstrumentations({
+      '@opentelemetry/instrumentation-fs': {
+        requireParentSpan: true,
+        enabled: true,
+        createHook: (funtionName, { args }) => {
+          // Ignore node_modules
+          return !args[0].toString().indexOf('node_modules');
+        },
+        endHook: (funtionName, { args, span }) => {
+          span.setAttribute('file', args[0].toString());
+        },
+      },
+      '@opentelemetry/instrumentation-http': {
+        requireParentforOutgoingSpans: true,
+        requestHook: (span: Span, request: ClientRequest) => {
+          span.updateName(`${request.method} ${request.path}`);
+        },
+        enabled: true,
+        ignoreIncomingPaths: ['/health'],
+      },
+      '@opentelemetry/instrumentation-graphql': {
+        enabled: true,
+        mergeItems: true,
+        ignoreTrivialResolveSpans: true,
+        depth: 2,
+      },
+    }),
+  ],
   spanProcessor: new NoopSpanProcessor(),
   textMapPropagator: new CompositePropagator({
     propagators: [
