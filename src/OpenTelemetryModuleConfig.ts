@@ -14,11 +14,7 @@ import { CompositePropagator } from '@opentelemetry/core';
 import { JaegerPropagator } from '@opentelemetry/propagator-jaeger';
 import { B3InjectEncoding, B3Propagator } from '@opentelemetry/propagator-b3';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { alibabaCloudEcsDetector } from '@opentelemetry/resource-detector-alibaba-cloud';
-import { awsEc2Detector } from '@opentelemetry/resource-detector-aws';
 import { containerDetector } from '@opentelemetry/resource-detector-container';
-import { gcpDetector } from '@opentelemetry/resource-detector-gcp';
-import { instanaAgentDetector } from '@opentelemetry/resource-detector-instana';
 
 export interface OpenTelemetryModuleConfig
   extends Partial<NodeSDKConfiguration> {
@@ -36,16 +32,10 @@ export const OpenTelemetryModuleDefaultConfig = {
     LoggerInjector,
   ],
   autoDetectResources: false,
-  resourceDetectors: [
-    alibabaCloudEcsDetector,
-    awsEc2Detector,
-    containerDetector,
-    gcpDetector,
-    instanaAgentDetector,
-  ],
+  resourceDetectors: [containerDetector],
   contextManager: new AsyncLocalStorageContextManager(),
   resource: new Resource({
-    lib: '@metinseylan/nestjs-opentelemetry',
+    lib: '@overbit/opentelemetry-nestjs',
   }),
   instrumentations: [getNodeAutoInstrumentations()],
   spanProcessor: new NoopSpanProcessor(),
