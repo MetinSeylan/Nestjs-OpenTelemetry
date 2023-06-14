@@ -1,14 +1,14 @@
-import { Test } from '@nestjs/testing';
-import { OpenTelemetryModule } from '../../OpenTelemetryModule';
-import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { Controller, Get, Injectable } from '@nestjs/common';
-import { Span } from '../Decorators/Span';
-import * as request from 'supertest';
-import { ControllerInjector } from '../Injectors/ControllerInjector';
+import { Test } from "@nestjs/testing";
+import { OpenTelemetryModule } from "../../OpenTelemetryModule";
+import { NoopSpanProcessor } from "@opentelemetry/sdk-trace-base";
+import { Controller, Get, Injectable } from "@nestjs/common";
+import { Span } from "../Decorators/Span";
+import * as request from "supertest";
+import { ControllerInjector } from "./ControllerInjector";
 
-describe('Base Trace Injector Test', () => {
+describe("Base Trace Injector Test", () => {
   const exporter = new NoopSpanProcessor();
-  const exporterSpy = jest.spyOn(exporter, 'onStart');
+  const exporterSpy = jest.spyOn(exporter, "onStart");
 
   const sdkModule = OpenTelemetryModule.forRoot({
     spanProcessor: exporter,
@@ -20,7 +20,7 @@ describe('Base Trace Injector Test', () => {
     exporterSpy.mockReset();
   });
 
-  it('should create spans that inherit the ids of their parents', async () => {
+  it("should create spans that inherit the ids of their parents", async () => {
     // given
     @Injectable()
     class HelloService {
@@ -32,7 +32,7 @@ describe('Base Trace Injector Test', () => {
       helloAgain() {} // eslint-disable-line @typescript-eslint/no-empty-function
     }
 
-    @Controller('hello')
+    @Controller("hello")
     class HelloController {
       constructor(private service: HelloService) {}
       @Get()
@@ -50,7 +50,7 @@ describe('Base Trace Injector Test', () => {
     await app.init();
 
     //when
-    await request(app.getHttpServer()).get('/hello').send().expect(200);
+    await request(app.getHttpServer()).get("/hello").send().expect(200);
 
     //then
     const [[parent], [childOfParent], [childOfChild]] = exporterSpy.mock.calls;

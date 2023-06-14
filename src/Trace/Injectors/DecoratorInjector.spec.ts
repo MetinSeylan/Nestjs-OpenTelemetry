@@ -1,14 +1,14 @@
-import { Test } from '@nestjs/testing';
-import { OpenTelemetryModule } from '../../OpenTelemetryModule';
-import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { Controller, Get, Injectable } from '@nestjs/common';
-import { Span } from '../Decorators/Span';
-import * as request from 'supertest';
-import { Constants } from '../../Constants';
+import { Test } from "@nestjs/testing";
+import { OpenTelemetryModule } from "../../OpenTelemetryModule";
+import { NoopSpanProcessor } from "@opentelemetry/sdk-trace-base";
+import { Controller, Get, Injectable } from "@nestjs/common";
+import { Span } from "../Decorators/Span";
+import * as request from "supertest";
+import { Constants } from "../../Constants";
 
-describe('Tracing Decorator Injector Test', () => {
+describe("Tracing Decorator Injector Test", () => {
   const exporter = new NoopSpanProcessor();
-  const exporterSpy = jest.spyOn(exporter, 'onStart');
+  const exporterSpy = jest.spyOn(exporter, "onStart");
 
   const sdkModule = OpenTelemetryModule.forRoot({
     spanProcessor: exporter,
@@ -39,8 +39,8 @@ describe('Tracing Decorator Injector Test', () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'Provider->HelloService.hi' }),
-      expect.any(Object),
+      expect.objectContaining({ name: "Provider->HelloService.hi" }),
+      expect.any(Object)
     );
 
     await app.close();
@@ -48,7 +48,7 @@ describe('Tracing Decorator Injector Test', () => {
 
   it(`should trace decorated controller method`, async () => {
     // given
-    @Controller('hello')
+    @Controller("hello")
     class HelloController {
       @Span()
       @Get()
@@ -63,12 +63,12 @@ describe('Tracing Decorator Injector Test', () => {
     await app.init();
 
     // when
-    await request(app.getHttpServer()).get('/hello').send().expect(200);
+    await request(app.getHttpServer()).get("/hello").send().expect(200);
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'Controller->HelloController.hi' }),
-      expect.any(Object),
+      expect.objectContaining({ name: "Controller->HelloController.hi" }),
+      expect.any(Object)
     );
 
     await app.close();
@@ -86,15 +86,15 @@ describe('Tracing Decorator Injector Test', () => {
 
     // when
     await expect(context.compile()).rejects.toThrow(
-      `@Span decorator not used with @Injectable provider class. Class: HelloService`,
+      `@Span decorator not used with @Injectable provider class. Class: HelloService`
     );
   });
 
   it(`should trace decorated controller method with custom trace name`, async () => {
     // given
-    @Controller('hello')
+    @Controller("hello")
     class HelloController {
-      @Span('MAVI_VATAN')
+      @Span("MAVI_VATAN")
       @Get()
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
@@ -107,14 +107,14 @@ describe('Tracing Decorator Injector Test', () => {
     await app.init();
 
     // when
-    await request(app.getHttpServer()).get('/hello').send().expect(200);
+    await request(app.getHttpServer()).get("/hello").send().expect(200);
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: 'Controller->HelloController.MAVI_VATAN',
+        name: "Controller->HelloController.MAVI_VATAN",
       }),
-      expect.any(Object),
+      expect.any(Object)
     );
 
     await app.close();
@@ -131,7 +131,7 @@ describe('Tracing Decorator Injector Test', () => {
     Reflect.defineMetadata(
       Constants.TRACE_METADATA_ACTIVE,
       1,
-      HelloService.prototype.hi,
+      HelloService.prototype.hi
     );
 
     const context = await Test.createTestingModule({
@@ -146,8 +146,8 @@ describe('Tracing Decorator Injector Test', () => {
 
     //then
     expect(exporterSpy).not.toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'Provider->HelloService.hi' }),
-      expect.any(Object),
+      expect.objectContaining({ name: "Provider->HelloService.hi" }),
+      expect.any(Object)
     );
 
     await app.close();

@@ -1,14 +1,14 @@
-import { Test } from '@nestjs/testing';
-import { OpenTelemetryModule } from '../../OpenTelemetryModule';
-import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { Injectable } from '@nestjs/common';
-import { Span } from '../Decorators/Span';
-import { EventEmitterInjector } from '../Injectors/EventEmitterInjector';
-import { OnEvent } from '@nestjs/event-emitter';
+import { Test } from "@nestjs/testing";
+import { OpenTelemetryModule } from "../../OpenTelemetryModule";
+import { NoopSpanProcessor } from "@opentelemetry/sdk-trace-base";
+import { Injectable } from "@nestjs/common";
+import { Span } from "../Decorators/Span";
+import { EventEmitterInjector } from "./EventEmitterInjector";
+import { OnEvent } from "@nestjs/event-emitter";
 
-describe('Tracing Event Emitter Injector Test', () => {
+describe("Tracing Event Emitter Injector Test", () => {
   const exporter = new NoopSpanProcessor();
-  const exporterSpy = jest.spyOn(exporter, 'onStart');
+  const exporterSpy = jest.spyOn(exporter, "onStart");
 
   const sdkModule = OpenTelemetryModule.forRoot({
     spanProcessor: exporter,
@@ -24,7 +24,7 @@ describe('Tracing Event Emitter Injector Test', () => {
     // given
     @Injectable()
     class HelloService {
-      @OnEvent('selam')
+      @OnEvent("selam")
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
     }
@@ -41,8 +41,8 @@ describe('Tracing Event Emitter Injector Test', () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'Event->HelloService.selam' }),
-      expect.any(Object),
+      expect.objectContaining({ name: "Event->HelloService.selam" }),
+      expect.any(Object)
     );
 
     await app.close();
@@ -52,8 +52,8 @@ describe('Tracing Event Emitter Injector Test', () => {
     // given
     @Injectable()
     class HelloService {
-      @Span('untraceable')
-      @OnEvent('tb2')
+      @Span("untraceable")
+      @OnEvent("tb2")
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
     }
@@ -70,8 +70,8 @@ describe('Tracing Event Emitter Injector Test', () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'Provider->HelloService.untraceable' }),
-      expect.any(Object),
+      expect.objectContaining({ name: "Provider->HelloService.untraceable" }),
+      expect.any(Object)
     );
 
     await app.close();
