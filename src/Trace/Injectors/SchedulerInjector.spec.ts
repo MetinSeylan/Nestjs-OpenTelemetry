@@ -1,14 +1,14 @@
-import { Test } from "@nestjs/testing";
-import { OpenTelemetryModule } from "../../OpenTelemetryModule";
-import { NoopSpanProcessor } from "@opentelemetry/sdk-trace-base";
-import { Injectable } from "@nestjs/common";
-import { Span } from "../Decorators/Span";
-import { Cron, Interval, Timeout } from "@nestjs/schedule";
-import { ScheduleInjector } from "./ScheduleInjector";
+import { Test } from '@nestjs/testing';
+import { OpenTelemetryModule } from '../../OpenTelemetryModule';
+import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { Injectable } from '@nestjs/common';
+import { Span } from '../Decorators/Span';
+import { Cron, Interval, Timeout } from '@nestjs/schedule';
+import { ScheduleInjector } from './ScheduleInjector';
 
-describe("Tracing Scheduler Injector Test", () => {
+describe('Tracing Scheduler Injector Test', () => {
   const exporter = new NoopSpanProcessor();
-  const exporterSpy = jest.spyOn(exporter, "onStart");
+  const exporterSpy = jest.spyOn(exporter, 'onStart');
 
   const sdkModule = OpenTelemetryModule.forRoot({
     spanProcessor: exporter,
@@ -24,7 +24,7 @@ describe("Tracing Scheduler Injector Test", () => {
     // given
     @Injectable()
     class HelloService {
-      @Cron("2 * * * * *")
+      @Cron('2 * * * * *')
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
     }
@@ -41,8 +41,8 @@ describe("Tracing Scheduler Injector Test", () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Scheduler->Cron->HelloService.hi" }),
-      expect.any(Object)
+      expect.objectContaining({ name: 'Scheduler->Cron->HelloService.hi' }),
+      expect.any(Object),
     );
 
     await app.close();
@@ -52,7 +52,7 @@ describe("Tracing Scheduler Injector Test", () => {
     // given
     @Injectable()
     class HelloService {
-      @Cron("2 * * * * *", { name: "AKSUNGUR" })
+      @Cron('2 * * * * *', { name: 'AKSUNGUR' })
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
     }
@@ -70,9 +70,9 @@ describe("Tracing Scheduler Injector Test", () => {
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: "Scheduler->Cron->HelloService.AKSUNGUR",
+        name: 'Scheduler->Cron->HelloService.AKSUNGUR',
       }),
-      expect.any(Object)
+      expect.any(Object),
     );
 
     await app.close();
@@ -82,8 +82,8 @@ describe("Tracing Scheduler Injector Test", () => {
     // given
     @Injectable()
     class HelloService {
-      @Cron("2 * * * * *")
-      @Span("ORUC_REIS")
+      @Cron('2 * * * * *')
+      @Span('ORUC_REIS')
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
     }
@@ -100,8 +100,8 @@ describe("Tracing Scheduler Injector Test", () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Provider->HelloService.ORUC_REIS" }),
-      expect.any(Object)
+      expect.objectContaining({ name: 'Provider->HelloService.ORUC_REIS' }),
+      expect.any(Object),
     );
 
     await app.close();
@@ -128,8 +128,8 @@ describe("Tracing Scheduler Injector Test", () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Scheduler->Interval->HelloService.hi" }),
-      expect.any(Object)
+      expect.objectContaining({ name: 'Scheduler->Interval->HelloService.hi' }),
+      expect.any(Object),
     );
 
     await app.close();
@@ -139,7 +139,7 @@ describe("Tracing Scheduler Injector Test", () => {
     // given
     @Injectable()
     class HelloService {
-      @Interval("FATIH", 100)
+      @Interval('FATIH', 100)
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
     }
@@ -157,9 +157,9 @@ describe("Tracing Scheduler Injector Test", () => {
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: "Scheduler->Interval->HelloService.FATIH",
+        name: 'Scheduler->Interval->HelloService.FATIH',
       }),
-      expect.any(Object)
+      expect.any(Object),
     );
 
     await app.close();
@@ -186,8 +186,8 @@ describe("Tracing Scheduler Injector Test", () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Scheduler->Timeout->HelloService.hi" }),
-      expect.any(Object)
+      expect.objectContaining({ name: 'Scheduler->Timeout->HelloService.hi' }),
+      expect.any(Object),
     );
 
     await app.close();
@@ -197,7 +197,7 @@ describe("Tracing Scheduler Injector Test", () => {
     // given
     @Injectable()
     class HelloService {
-      @Timeout("BARBAROS", 100)
+      @Timeout('BARBAROS', 100)
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hi() {}
     }
@@ -215,9 +215,9 @@ describe("Tracing Scheduler Injector Test", () => {
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
       expect.objectContaining({
-        name: "Scheduler->Timeout->HelloService.BARBAROS",
+        name: 'Scheduler->Timeout->HelloService.BARBAROS',
       }),
-      expect.any(Object)
+      expect.any(Object),
     );
 
     await app.close();

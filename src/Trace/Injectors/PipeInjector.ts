@@ -17,7 +17,7 @@ export class PipeInjector extends BaseTraceInjector implements Injector {
     const controllers = this.getControllers();
 
     for (const controller of controllers) {
-      const keys = this.metadataScanner.getAllFilteredMethodNames(
+      const keys = this.metadataScanner.getAllMethodNames(
         controller.metatype.prototype,
       );
 

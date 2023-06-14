@@ -20,7 +20,7 @@ export class ScheduleInjector extends BaseTraceInjector implements Injector {
     const providers = this.getProviders();
 
     for (const provider of providers) {
-      const keys = this.metadataScanner.getAllFilteredMethodNames(
+      const keys = this.metadataScanner.getAllMethodNames(
         provider.metatype.prototype,
       );
 

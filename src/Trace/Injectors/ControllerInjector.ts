@@ -15,7 +15,7 @@ export class ControllerInjector extends BaseTraceInjector implements Injector {
     const controllers = this.getControllers();
 
     for (const controller of controllers) {
-      const keys = this.metadataScanner.getAllFilteredMethodNames(
+      const keys = this.metadataScanner.getAllMethodNames(
         controller.metatype.prototype,
       );
 
@@ -23,7 +23,8 @@ export class ControllerInjector extends BaseTraceInjector implements Injector {
         if (
           !this.isDecorated(controller.metatype.prototype[key]) &&
           !this.isAffected(controller.metatype.prototype[key]) &&
-          this.isPath(controller.metatype.prototype[key])
+          (this.isPath(controller.metatype.prototype[key]) ||
+            this.isMicroservice(controller.metatype.prototype[key]))
         ) {
           const traceName = `Controller->${controller.name}.${controller.metatype.prototype[key].name}`;
           const method = this.wrap(

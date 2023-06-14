@@ -4,6 +4,8 @@ import { Constants } from '../../Constants';
 import { MetadataScanner, ModulesContainer } from '@nestjs/core';
 import { Controller, Injectable } from '@nestjs/common/interfaces';
 import { PATH_METADATA } from '@nestjs/common/constants';
+import { PATTERN_HANDLER_METADATA } from '@nestjs/microservices/constants';
+import { TraceWrapper } from '../TraceWrapper';
 
 export class BaseTraceInjector {
   protected readonly metadataScanner: MetadataScanner = new MetadataScanner();
@@ -34,6 +36,10 @@ export class BaseTraceInjector {
     return Reflect.hasMetadata(PATH_METADATA, prototype);
   }
 
+  protected isMicroservice(prototype): boolean {
+    return Reflect.hasMetadata(PATTERN_HANDLER_METADATA, prototype);
+  }
+
   protected isAffected(prototype): boolean {
     return Reflect.hasMetadata(Constants.TRACE_METADATA_ACTIVE, prototype);
   }
@@ -56,45 +62,7 @@ export class BaseTraceInjector {
   }
 
   protected wrap(prototype: Record<any, any>, traceName, attributes = {}) {
-    const method = {
-      [prototype.name]: function (...args: any[]) {
-        const tracer = trace.getTracer('default');
-        const currentSpan = tracer.startSpan(traceName);
-
-        return context.with(
-          trace.setSpan(context.active(), currentSpan),
-          () => {
-            currentSpan.setAttributes(attributes);
-            if (prototype.constructor.name === 'AsyncFunction') {
-              return prototype
-                .apply(this, args)
-                .catch((error) =>
-                  BaseTraceInjector.recordException(error, currentSpan),
-                )
-                .finally(() => {
-                  currentSpan.end();
-                });
-            } else {
-              try {
-                const result = prototype.apply(this, args);
-                currentSpan.end();
-                return result;
-              } catch (error) {
-                BaseTraceInjector.recordException(error, currentSpan);
-              } finally {
-                currentSpan.end();
-              }
-            }
-          },
-        );
-      },
-    }[prototype.name];
-
-    Reflect.defineMetadata(Constants.TRACE_METADATA, traceName, method);
-    this.affect(method);
-    this.reDecorate(prototype, method);
-
-    return method;
+    return TraceWrapper.wrap(prototype, traceName, attributes);
   }
 
   protected static recordException(error, span: Span) {

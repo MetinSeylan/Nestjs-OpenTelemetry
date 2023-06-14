@@ -35,7 +35,7 @@ export class GuardInjector extends BaseTraceInjector implements Injector {
         }
       }
 
-      const keys = this.metadataScanner.getAllFilteredMethodNames(
+      const keys = this.metadataScanner.getAllMethodNames(
         controller.metatype.prototype,
       );
 

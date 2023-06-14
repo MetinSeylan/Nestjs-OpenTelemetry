@@ -79,6 +79,7 @@ export class OpenTelemetryModule {
     return {
       global: true,
       module: OpenTelemetryModule,
+      // eslint-disable-next-line no-unsafe-optional-chaining
       imports: [...configuration?.imports, EventEmitterModule.forRoot()],
       providers: [
         TraceService,

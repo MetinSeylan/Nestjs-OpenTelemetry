@@ -1,14 +1,14 @@
-import { Test } from "@nestjs/testing";
-import { OpenTelemetryModule } from "../../OpenTelemetryModule";
-import { NoopSpanProcessor } from "@opentelemetry/sdk-trace-base";
-import { Controller, Get, PipeTransform, UsePipes } from "@nestjs/common";
-import { PipeInjector } from "./PipeInjector";
-import { PIPES_METADATA } from "@nestjs/common/constants";
-import { APP_PIPE } from "@nestjs/core";
+import { Test } from '@nestjs/testing';
+import { OpenTelemetryModule } from '../../OpenTelemetryModule';
+import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { Controller, Get, PipeTransform, UsePipes } from '@nestjs/common';
+import { PipeInjector } from './PipeInjector';
+import { PIPES_METADATA } from '@nestjs/common/constants';
+import { APP_PIPE } from '@nestjs/core';
 
-describe("Tracing Pipe Injector Test", () => {
+describe('Tracing Pipe Injector Test', () => {
   const exporter = new NoopSpanProcessor();
-  const exporterSpy = jest.spyOn(exporter, "onStart");
+  const exporterSpy = jest.spyOn(exporter, 'onStart');
 
   const sdkModule = OpenTelemetryModule.forRoot({
     spanProcessor: exporter,
@@ -41,7 +41,7 @@ describe("Tracing Pipe Injector Test", () => {
     // when
     for await (const provider of providers) {
       if (
-        typeof provider.token === "string" &&
+        typeof provider.token === 'string' &&
         provider.token.includes(APP_PIPE)
       ) {
         await provider.metatype.prototype.transform(1);
@@ -50,8 +50,8 @@ describe("Tracing Pipe Injector Test", () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Pipe->Global->HelloPipe" }),
-      expect.any(Object)
+      expect.objectContaining({ name: 'Pipe->Global->HelloPipe' }),
+      expect.any(Object),
     );
 
     await app.close();
@@ -64,7 +64,7 @@ describe("Tracing Pipe Injector Test", () => {
       async transform() {}
     }
 
-    @Controller("hello")
+    @Controller('hello')
     class HelloController {
       @Get()
       @UsePipes(HelloPipe)
@@ -85,8 +85,8 @@ describe("Tracing Pipe Injector Test", () => {
 
     //then
     expect(exporterSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ name: "Pipe->HelloController.hi.HelloPipe" }),
-      expect.any(Object)
+      expect.objectContaining({ name: 'Pipe->HelloController.hi.HelloPipe' }),
+      expect.any(Object),
     );
 
     await app.close();

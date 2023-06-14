@@ -26,7 +26,7 @@ export class DecoratorInjector extends BaseTraceInjector implements Injector {
         );
       }
 
-      const keys = this.metadataScanner.getAllFilteredMethodNames(
+      const keys = this.metadataScanner.getAllMethodNames(
         provider.metatype.prototype,
       );
 
@@ -57,7 +57,7 @@ export class DecoratorInjector extends BaseTraceInjector implements Injector {
     for (const controller of controllers) {
       const isControllerDecorated = this.isDecorated(controller.metatype);
 
-      const keys = this.metadataScanner.getAllFilteredMethodNames(
+      const keys = this.metadataScanner.getAllMethodNames(
         controller.metatype.prototype,
       );
 
