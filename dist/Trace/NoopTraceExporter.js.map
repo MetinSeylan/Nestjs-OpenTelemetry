@@ -1,1 +1,0 @@
-{"version":3,"file":"NoopTraceExporter.js","sourceRoot":"","sources":["../../src/Trace/NoopTraceExporter.ts"],"names":[],"mappings":";;;AAGA,MAAa,iBAAiB;IAC5B,MAAM,CACJ,KAAqB,EACrB,cAA8C;IAGhD,CAAC;IAED,QAAQ;QACN,OAAO,OAAO,CAAC,OAAO,CAAC,SAAS,CAAC,CAAC;IACpC,CAAC;CACF;AAXD,8CAWC"}
