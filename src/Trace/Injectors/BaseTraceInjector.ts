@@ -1,5 +1,4 @@
 import { InstanceWrapper } from '@nestjs/core/injector/instance-wrapper';
-import { context, Span, SpanStatusCode, trace } from '@opentelemetry/api';
 import { Constants } from '../../Constants';
 import { MetadataScanner, ModulesContainer } from '@nestjs/core';
 import { Controller, Injectable } from '@nestjs/common/interfaces';

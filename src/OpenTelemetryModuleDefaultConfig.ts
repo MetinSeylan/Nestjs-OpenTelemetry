@@ -54,6 +54,9 @@ export const OpenTelemetryModuleDefaultConfig = <OpenTelemetryModuleConfig>{
         enabled: true,
         ignoreIncomingPaths: ['/health'],
       },
+      '@opentelemetry/instrumentation-net': {
+        enabled: false,
+      },
       '@opentelemetry/instrumentation-graphql': {
         enabled: true,
         mergeItems: true,
