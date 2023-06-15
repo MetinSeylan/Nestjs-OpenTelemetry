@@ -8,19 +8,20 @@
 
 This library, initially forked from [@metinseylan/nestjs-opentelemetry](https://github.com/MetinSeylan/Nestjs-OpenTelemetry) (whom it goes a big thank you), provides deeply integrated protocol-agnostic Nestjs [OpenTelemetry](https://opentelemetry.io/) instrumentations, metrics and SDK.
 
-### Description
+## Description
 
 Nestjs is a protocol-agnostic framework. That's why this library can able to work with different protocols like RabbitMQ, GRPC and HTTP. Also you can observe and trace Nestjs specific layers like [Pipe](https://docs.nestjs.com/pipes), [Guard](https://docs.nestjs.com/guards), [Controller](https://docs.nestjs.com/controllers) and [Provider](https://docs.nestjs.com/providers).
 
 It also includes auto trace and metric instrumentations for some popular Nestjs libraries.
 
-- #### Distributed Tracing
+- ### Distributed Tracing
   - [Setup](#distributed-tracing-1)
   - [Decorators](#trace-decorators)
   - [Trace Providers](#trace-providers)
+  - [Trace Not @Injectable() classes](#trace-not-injectable-classes)
   - [Auto Trace Instrumentations](#auto-trace-instrumentations)
   - [Distributed Logging with Trace ID](#distributed-logging-with-trace-id)
-- #### Metrics
+- ### Metrics
   - [Setup](#metrics-1)
 
 OpenTelemetry Metrics currently experimental. So, this library doesn't support metric decorators and Auto Observers until it's stable. but if you want to use it, you can use OpenTelemetry API directly.
@@ -32,7 +33,7 @@ Competability table for Nestjs versions.
 | 9.x    | 3.x.x                |
 | 8.x    | 2.x.x                |
 
-### Installation
+## Installation
 
 ```bash
 npm install @overbit/opentelemetry-nestjs --save
@@ -40,7 +41,7 @@ npm install @overbit/opentelemetry-nestjs --save
 
 ---
 
-### Configuration
+## Configuration
 
 This is a basic configuration without any trace and metric exporter, but includes default metrics and injectors
 
@@ -77,22 +78,21 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 export class AppModule {}
 ```
 
-#### Default Parameters
+### Default Parameters
 
-| key                 | value                                                                                                                                                                                                                    | description                                                                                                                                                                                                                                                               |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| traceAutoInjectors  | ControllerInjector, GuardInjector, EventEmitterInjector, ScheduleInjector, PipeInjector, LoggerInjector                                                                                                                  | default auto trace instrumentations                                                                                                                                                                                                                                       |
-| metricAutoObservers | ResourceMetric, ProcessStartTimeMetric, ProcessOpenFdsMetric, ProcessMaxFdsMetric, ActiveHandlesMetric, ActiveHandlesTotalMetric, HttpRequestDurationSeconds, GrpcRequestDurationSeconds, RabbitMqRequestDurationSeconds | default auto metric collectors                                                                                                                                                                                                                                            |     | inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration">NodeSDKConfiguration</a> |
-| contextManager      | AsyncLocalStorageContextManager                                                                                                                                                                                          | default trace context manager inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a> |
-| instrumentations    | AutoInstrumentations                                                                                                                                                                                                     | default instrumentations inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>      |
-| spanProcessor       | NoopSpanProcessor                                                                                                                                                                                                        | default spanProcessor inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>         |
-| textMapPropagator   | JaegerPropagator, B3Propagator                                                                                                                                                                                           | default textMapPropagator inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>     |
+| key                | value                                                                                                   | description                                                                                                                                                                                                                                                                   |
+| ------------------ | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| traceAutoInjectors | ControllerInjector, GuardInjector, EventEmitterInjector, ScheduleInjector, PipeInjector, LoggerInjector | default auto trace instrumentations inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration">NodeSDKConfiguration</a> |
+| contextManager     | AsyncLocalStorageContextManager                                                                         | default trace context manager inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>     |
+| instrumentations   | AutoInstrumentations                                                                                    | default instrumentations inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>          |
+| spanProcessor      | NoopSpanProcessor                                                                                       | default spanProcessor inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>             |
+| textMapPropagator  | JaegerPropagator, B3Propagator                                                                          | default textMapPropagator inherited from <a href="https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration"> NodeSDKConfiguration </a>         |
 
-`OpenTelemetryModule.forRoot()` takes [OpenTelemetryModuleConfig](https://github.com/overbit/opentelemetry-nestjs/blob/main/src/OpenTelemetryModuleConfig.ts#L25) as a parameter, this type is inherited by [NodeSDKConfiguration](https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration) so you can use same OpenTelemetry SDK parameter.
+`OpenTelemetryModule.forRoot()` takes [OpenTelemetryModuleConfig](https://github.com/MetinSeylan/Nestjs-OpenTelemetry/blob/main/src/OpenTelemetryModuleConfig.ts#L25) as a parameter, this type is inherited by [NodeSDKConfiguration](https://github.com/open-telemetry/opentelemetry-js/blob/745bd5c34d3961dc73873190adc763747e5e026d/experimental/packages/opentelemetry-sdk-node/src/types.ts#:~:text=NodeSDKConfiguration) so you can use same OpenTelemetry SDK parameter.
 
 ---
 
-### Distributed Tracing
+## Distributed Tracing
 
 Simple setup with Zipkin exporter, including with default trace instrumentations.
 
@@ -123,9 +123,11 @@ List of supported official exporters [here](https://opentelemetry.io/docs/js/exp
 
 ---
 
-#### Trace Decorators
+### Trace Decorators
 
-This library supports auto instrumentations for Nestjs layers, but sometimes you need to define custom span for specific method blocks like providers methods. In this case `@Span` decorator will help you.
+This library supports auto instrumentations for Nestjs layers, but sometimes you need to define custom span for specific method blocks like providers methods. In this case `@Traceable` and `@Span` decorators will help you.
+
+#### `@Span`
 
 ```ts
 import { Injectable } from '@nestjs/common';
@@ -146,11 +148,28 @@ Also `@Span` decorator takes `name` field as a parameter
 @Span('hello')
 ```
 
+#### `@Traceable`
+
+`@Traceable` works like `@Span` but with the difference that it can be used at a class level to auto instrument every method of the class
+
+```ts
+import { Injectable } from '@nestjs/common';
+import { Traceable } from '@overbit/opentelemetry-nestjs';
+
+@Traceable()
+@Injectable()
+export class AppService {
+  getHello(): string {
+    return 'Hello World!';
+  }
+}
+```
+
 ---
 
-#### Trace Providers
+### Trace Providers
 
-In an advanced usage case, you need to access the native OpenTelemetry Trace provider to access them from Nestjs application context.
+In an advanced use cases, you need to access the native OpenTelemetry Trace provider to access them from Nestjs application context.
 
 ```ts
 import { Injectable } from '@nestjs/common';
@@ -191,7 +210,7 @@ export class AppService {
 
 ---
 
-#### Auto Trace Instrumentations
+### Auto Trace Instrumentations
 
 The most helpful part of this library is that you already get all of the instrumentations by default if you set up a module without any extra configuration. If you need to avoid some of them, you can use the `traceAutoInjectors` parameter.
 
@@ -233,14 +252,14 @@ export class AppModule {}
 
 #### List of Trace Injectors
 
-| Instance               | Description                                                                                                                                                                                                        |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ControllerInjector`   | Auto trace all of module controllers                                                                                                                                                                               |
-| `GuardInjector`        | Auto trace all of module guards including global guards                                                                                                                                                            |
-| `PipeInjector`         | Auto trace all of module pipes including global pipes                                                                                                                                                              |
-| `EventEmitterInjector` | Auto trace for [@nestjs/event-emitter](https://docs.nestjs.com/techniques/events) library, supports all features                                                                                                   |
-| `ScheduleInjector`     | Auto trace for [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) library, supports all features                                                                                               |
-| `LoggerInjector`       | [ConsoleLogger](https://docs.nestjs.com/techniques/logger#extend-built-in-logger) and [Logger](https://docs.nestjs.com/techniques/logger#using-the-logger-for-application-logging) class tracer, logs with traceId |
+| Instance                | Description                                                                                                                                                                                                        |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ControllerInjector`    | Auto trace all of module controllers                                                                                                                                                                               |
+| `GuardInjector`         | Auto trace all of module guards including global guards                                                                                                                                                            |
+| `PipeInjector`          | Auto trace all of module pipes including global pipes                                                                                                                                                              |
+| `EventEmitterInjector`  | Auto trace for [@nestjs/event-emitter](https://docs.nestjs.com/techniques/events) library, supports all features                                                                                                   |
+| `ScheduleInjector`      | Auto trace for [@nestjs/schedule](https://docs.nestjs.com/techniques/task-scheduling) library, supports all features                                                                                               |
+| `ConsoleLoggerInjector` | [ConsoleLogger](https://docs.nestjs.com/techniques/logger#extend-built-in-logger) and [Logger](https://docs.nestjs.com/techniques/logger#using-the-logger-for-application-logging) class tracer, logs with traceId |
 
 ---
 
@@ -252,7 +271,32 @@ When you set up your environment with the `LoggerInjector` class or default conf
 
 ---
 
-### Metrics
+### Trace Not @Injectable() classes
+
+In some use cases, you need to trace instances of classes instanciated outside the NestJS DI container.
+In order to do so, use the `TraceWrapper.trace()` method to wrap every method of the instance in a new span as follow
+
+```ts
+import { TraceWrapper } from '@overbit/opentelemetry-nestjs';
+
+class MyClass {
+  hello() {
+    console.log('Hi');
+  }
+
+  async bye() {
+    await new Promise(() => console.log('bye bye'));
+  }
+}
+
+// ....
+const instance = new MyClass();
+const tracedInstance = TraceWrapper.trace(instance);
+
+// ....
+```
+
+## Metrics
 
 Simple setup with Prometheus exporter, you need install [@opentelemetry/exporter-prometheus](https://www.npmjs.com/package/@opentelemetry/exporter-prometheus)
 
@@ -279,145 +323,7 @@ Also, you can find different exporters [here](https://opentelemetry.io/docs/js/e
 
 ---
 
-### Metric Decorators (Deprecated)
-
-If you need to observe simple block of function, you can use some basic decorators like `@Counter` and `@Observer`
-
-#### Counter
-
-```ts
-import { Injectable } from '@nestjs/common';
-import { Counter } from '@overbit/opentelemetry-nestjs';
-
-@Injectable()
-export class AppService {
-  @Counter()
-  getHello(): string {
-    return 'Hello World!';
-  }
-}
-```
-
-`@Counter` decorator is uses OpenTelemetry `Counter` metric, If you check prometheus exporter you will see metric `appservice_gethello_total`
-
-```ts
-@Counter('call_me_mr_fahrenheit', {
-  description: 'important function call counting here.'
-})
-```
-
-And of course, you can configure your decorator metric, the first parameter is "name" and the second one is [MetricOptions](https://github.com/open-telemetry/opentelemetry-js/blob/357ec92e95e03b4d2309c65ffb17d06105985628/experimental/packages/opentelemetry-api-metrics/src/types/Metric.ts#L29)
-
-#### Observer (Deprecated)
-
-```ts
-import { Injectable } from '@nestjs/common';
-import { Observer } from './Observer';
-
-@Injectable()
-export class AppService {
-  @Observer('nice_one_observer', {
-    description: 'some description here.',
-    boundaries: [10, 20, 30],
-  })
-  getHello(): string {
-    return 'Hello World!';
-  }
-}
-```
-
-`@Observer` decorator uses OpenTelemetry `ValueRecorder` metric. If you check Prometheus exporter, you will see metric and configuration parameters same as `@Counter`.
-
----
-
-### Metric Providers (Deprecated)
-
-In advanced usage cases, you need to access the native OpenTelemetry Metric provider to access them from the Nestjs application context.
-
-```ts
-import { Injectable } from '@nestjs/common';
-import { Meter } from '@opentelemetry/sdk-metrics-base';
-import { Counter } from '@opentelemetry/api-metrics';
-
-@Injectable()
-export class AppService {
-  private readonly counter: Counter;
-
-  constructor(private readonly meter: Meter) {
-    this.counter = this.meter.createCounter('handsome_counter');
-  }
-
-  getHello(): string {
-    this.counter.add(1);
-    return 'Hello World!';
-  }
-}
-```
-
----
-
-### Auto Metric Observers (Deprecated)
-
-This library has extendable resource and protocol-specific Auto Observers. All of them come with default module configuration, which you can extend and configure.
-
-```ts
-import { Module } from '@nestjs/common';
-import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
-import {
-  ActiveHandlesMetric,
-  HttpRequestDurationSeconds,
-  OpenTelemetryModule,
-} from '@overbit/opentelemetry-nestjs';
-
-@Module({
-  imports: [
-    OpenTelemetryModule.forRoot({
-      serviceName: 'nestjs-opentelemetry-example',
-      metricAutoObservers: [
-        HttpRequestDurationSeconds.build({
-          boundaries: [20, 30, 100],
-        }),
-        ActiveHandlesMetric,
-      ],
-      metricReader: new PrometheusExporter({
-        endpoint: 'metrics',
-        port: 9464,
-      }),
-    }),
-  ],
-})
-export class AppModule {}
-```
-
-`.build` function takes [MetricOptions](https://github.com/open-telemetry/opentelemetry-js/blob/357ec92e95e03b4d2309c65ffb17d06105985628/experimental/packages/opentelemetry-api-metrics/src/types/Metric.ts#L29) as a parameter.
-
-#### List Of Auto Observers (Deprecated)
-
-| Metric Observer Provider         | Description                                                                                 | Configurable |
-| -------------------------------- | ------------------------------------------------------------------------------------------- | ------------ |
-| `HttpRequestDurationSeconds`     | Observe http request duration                                                               | yes          |
-| `GrpcRequestDurationSeconds`     | Observe grpc request duration                                                               | yes          |
-| `RabbitMqRequestDurationSeconds` | Observe rabbitmq request duration                                                           | yes          |
-| `ResourceMetric`                 | Metrics of cpu, memory usage                                                                | no           |
-| `ProcessStartTimeMetric`         | Start time of the process since unix epoch in seconds.                                      | no           |
-| `ProcessOpenFdsMetric`           | Number of open file descriptors.                                                            | no           |
-| `ProcessMaxFdsMetric`            | Maximum number of open file descriptors.                                                    | no           |
-| `ActiveHandlesMetric`            | Number of active libuv handles grouped by handle type. Every handle type is C++ class name. | no           |
-| `ActiveHandlesTotalMetric`       | Total number of active handles.                                                             | no           |
-
-#### Example Output for `HttpRequestDurationSeconds`
-
-| Key       | Value                                                           |
-| --------- | --------------------------------------------------------------- |
-| exception | Empty string or exception instance name                         |
-| method    | GET, POST, PUT, PATCH, DELETE                                   |
-| outcome   | INFORMATIONAL, SUCCESS, REDIRECTION, CLIENT_ERROR, SERVER_ERROR |
-| status    | number of HttpStatus                                            |
-| uri       | url path                                                        |
-
----
-
-### Let's Combine All of them
+## Let's Combine All of them
 
 ```ts
 import { Module } from '@nestjs/common';
