@@ -28,6 +28,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "prepublishOnly": "npm run build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
