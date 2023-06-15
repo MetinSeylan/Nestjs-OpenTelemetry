@@ -1,6 +1,6 @@
 {
   "name": "@overbit/opentelemetry-nestjs",
-  "version": "4.0.0-beta.3",
+  "version": "4.0.0",
   "description": "OpenTelemetry module for Nestjs with auto instrumentation and resource detection. Initially forked from https://github.com/MetinSeylan/Nestjs-OpenTelemetry",
   "author": "2861984+overbit@users.noreply.github.com",
   "license": "MIT",
