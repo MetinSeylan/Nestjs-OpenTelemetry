@@ -13,6 +13,7 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
       - run: npm ci
+      - run: npm run build
       - if: 'github.event.release.prerelease'
         run: npm publish --access public --tag beta
         env:
