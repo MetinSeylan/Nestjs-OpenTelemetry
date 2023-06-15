@@ -57,6 +57,9 @@ export const OpenTelemetryModuleDefaultConfig = <OpenTelemetryModuleConfig>{
       '@opentelemetry/instrumentation-net': {
         enabled: false,
       },
+      '@opentelemetry/instrumentation-dns': {
+        enabled: false,
+      },
       '@opentelemetry/instrumentation-graphql': {
         enabled: true,
         mergeItems: true,
