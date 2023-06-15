@@ -88,7 +88,7 @@ export class TraceWrapper {
     return method;
   }
 
-  protected static reDecorate(source, destination) {
+  private static reDecorate(source, destination) {
     const keys = Reflect.getMetadataKeys(source);
 
     for (const key of keys) {
@@ -97,13 +97,13 @@ export class TraceWrapper {
     }
   }
 
-  protected static recordException(error, span: Span) {
+  private static recordException(error, span: Span) {
     span.recordException(error);
     span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
     throw error;
   }
 
-  protected static affect(prototype) {
+  private static affect(prototype) {
     Reflect.defineMetadata(Constants.TRACE_METADATA_ACTIVE, 1, prototype);
   }
 }

@@ -65,12 +65,6 @@ export class BaseTraceInjector {
     return TraceWrapper.wrap(prototype, traceName, attributes);
   }
 
-  protected static recordException(error, span: Span) {
-    span.recordException(error);
-    span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-    throw error;
-  }
-
   protected affect(prototype) {
     Reflect.defineMetadata(Constants.TRACE_METADATA_ACTIVE, 1, prototype);
   }
