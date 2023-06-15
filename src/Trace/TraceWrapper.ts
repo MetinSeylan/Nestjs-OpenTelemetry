@@ -33,10 +33,12 @@ export class TraceWrapper {
     traceName: string,
     attributes = {},
   ) {
-    const method = {
-      [prototype.name]: async function (...args: unknown[]) {
-        const tracer = trace.getTracer('default');
-        if (prototype.constructor.name === 'AsyncFunction') {
+    let method;
+
+    if (prototype.constructor.name === 'AsyncFunction') {
+      method = {
+        [prototype.name]: async function (...args: unknown[]) {
+          const tracer = trace.getTracer('default');
           return await tracer.startActiveSpan(traceName, async (span) => {
             return prototype
               .apply(this, args)
@@ -45,7 +47,12 @@ export class TraceWrapper {
                 span.end();
               });
           });
-        } else {
+        },
+      }[prototype.name];
+    } else {
+      method = {
+        [prototype.name]: function (...args: unknown[]) {
+          const tracer = trace.getTracer('default');
           return tracer.startActiveSpan(traceName, (span) => {
             span.setAttributes(attributes);
             try {
@@ -57,9 +64,9 @@ export class TraceWrapper {
               span.end();
             }
           });
-        }
-      },
-    }[prototype.name];
+        },
+      }[prototype.name];
+    }
 
     Reflect.defineMetadata(Constants.TRACE_METADATA, traceName, method);
     this.affect(method);
