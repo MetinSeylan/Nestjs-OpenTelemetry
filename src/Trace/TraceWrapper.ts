@@ -4,6 +4,12 @@ import { MetadataScanner } from '@nestjs/core/metadata-scanner';
 import type { ILogger } from './Logger.interface';
 
 export class TraceWrapper {
+  /**
+   * Trace a class by wrapping all methods in a trace segment
+   * @param instance Instance of the class to trace
+   * @param logger Logger to use for debugging logs. Defaults to console
+   * @returns The traced instance of the class
+   */
   static trace<T>(instance: T, logger?: ILogger): T {
     logger = logger ?? console;
     const keys = new MetadataScanner().getAllMethodNames(
@@ -27,6 +33,13 @@ export class TraceWrapper {
     return instance;
   }
 
+  /**
+   * Wrap a method in a trace segment
+   * @param prototype prototype of the method to wrap
+   * @param traceName Span/Segment name
+   * @param attributes Additional attributes to add to the span
+   * @returns The wrapped method
+   */
   static wrap(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     prototype: Record<any, any>,
