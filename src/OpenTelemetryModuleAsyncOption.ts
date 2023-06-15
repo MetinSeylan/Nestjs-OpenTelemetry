@@ -1,5 +1,5 @@
 import { ModuleMetadata } from '@nestjs/common';
-import { OpenTelemetryModuleConfig } from './OpenTelemetryModuleConfig';
+import type { OpenTelemetryModuleConfig } from './OpenTelemetryModuleConfig.interface';
 
 export interface OpenTelemetryModuleAsyncOption
   extends Pick<ModuleMetadata, 'imports'> {

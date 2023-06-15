@@ -3,7 +3,7 @@ import { Injector } from './Injector';
 import { context, trace } from '@opentelemetry/api';
 
 @Injectable()
-export class LoggerInjector implements Injector {
+export class ConsoleLoggerInjector implements Injector {
   public inject() {
     ConsoleLogger.prototype.log = this.wrapPrototype(
       ConsoleLogger.prototype.log,
@@ -25,7 +25,7 @@ export class LoggerInjector implements Injector {
   private wrapPrototype(prototype) {
     return {
       [prototype.name]: function (...args: any[]) {
-        args[0] = LoggerInjector.getMessage(args[0]);
+        args[0] = ConsoleLoggerInjector.getMessage(args[0]);
         prototype.apply(this, args);
       },
     }[prototype.name];

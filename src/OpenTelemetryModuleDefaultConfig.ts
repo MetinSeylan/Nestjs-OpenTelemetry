@@ -1,12 +1,9 @@
-import { Provider } from '@nestjs/common/interfaces/modules/provider.interface';
-import { Injector } from './Trace/Injectors/Injector';
-import { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
 import { ControllerInjector } from './Trace/Injectors/ControllerInjector';
 import { GuardInjector } from './Trace/Injectors/GuardInjector';
 import { EventEmitterInjector } from './Trace/Injectors/EventEmitterInjector';
 import { ScheduleInjector } from './Trace/Injectors/ScheduleInjector';
 import { PipeInjector } from './Trace/Injectors/PipeInjector';
-import { LoggerInjector } from './Trace/Injectors/LoggerInjector';
+import { ConsoleLoggerInjector } from './Trace/Injectors/ConsoleLoggerInjector';
 import { AsyncLocalStorageContextManager } from '@opentelemetry/context-async-hooks';
 import { Resource } from '@opentelemetry/resources';
 import { NoopSpanProcessor } from '@opentelemetry/sdk-trace-base';
@@ -18,13 +15,9 @@ import { containerDetector } from '@opentelemetry/resource-detector-container';
 
 import { Span } from '@opentelemetry/api';
 import { ClientRequest } from 'http';
+import { OpenTelemetryModuleConfig } from './OpenTelemetryModuleConfig.interface';
 
-export interface OpenTelemetryModuleConfig
-  extends Partial<NodeSDKConfiguration> {
-  traceAutoInjectors?: Provider<Injector>[];
-}
-
-export const OpenTelemetryModuleDefaultConfig = {
+export const OpenTelemetryModuleDefaultConfig = <OpenTelemetryModuleConfig>{
   serviceName: 'UNKNOWN',
   traceAutoInjectors: [
     ControllerInjector,
@@ -32,7 +25,7 @@ export const OpenTelemetryModuleDefaultConfig = {
     EventEmitterInjector,
     ScheduleInjector,
     PipeInjector,
-    LoggerInjector,
+    ConsoleLoggerInjector,
   ],
   autoDetectResources: false,
   resourceDetectors: [containerDetector],
@@ -79,4 +72,4 @@ export const OpenTelemetryModuleDefaultConfig = {
       }),
     ],
   }),
-} as OpenTelemetryModuleConfig;
+};

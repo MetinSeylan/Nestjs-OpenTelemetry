@@ -2,10 +2,7 @@ import { DynamicModule } from '@nestjs/common';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceService } from './Trace/TraceService';
 import { Constants } from './Constants';
-import {
-  OpenTelemetryModuleConfig,
-  OpenTelemetryModuleDefaultConfig,
-} from './OpenTelemetryModuleConfig';
+import { OpenTelemetryModuleDefaultConfig } from './OpenTelemetryModuleDefaultConfig';
 import { FactoryProvider } from '@nestjs/common/interfaces/modules/provider.interface';
 import { OpenTelemetryService } from './OpenTelemetryService';
 import { OpenTelemetryModuleAsyncOption } from './OpenTelemetryModuleAsyncOption';
@@ -13,6 +10,7 @@ import { DecoratorInjector } from './Trace/Injectors/DecoratorInjector';
 import { ModuleRef } from '@nestjs/core';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Tracer } from '@opentelemetry/sdk-trace-base';
+import { OpenTelemetryModuleConfig } from './OpenTelemetryModuleConfig.interface';
 
 export class OpenTelemetryModule {
   static async forRoot(

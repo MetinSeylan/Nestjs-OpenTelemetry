@@ -22,9 +22,6 @@ It also includes auto trace and metric instrumentations for some popular Nestjs 
   - [Distributed Logging with Trace ID](#distributed-logging-with-trace-id)
 - #### Metrics
   - [Setup](#metrics-1)
-  - ~~[Decorators](#metric-decorators)~~
-  - ~~[Metric Providers](#metric-providers)~~
-  - ~~[Auto Metric Observers](#auto-metric-observers)~~
 
 OpenTelemetry Metrics currently experimental. So, this library doesn't support metric decorators and Auto Observers until it's stable. but if you want to use it, you can use OpenTelemetry API directly.
 

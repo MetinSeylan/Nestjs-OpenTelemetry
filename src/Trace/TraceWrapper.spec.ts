@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { trace } from '@opentelemetry/api';
 import { TraceWrapper } from './TraceWrapper';
-import { ILogger } from './ILogger';
+import { ILogger } from './Logger.interface';
 
 import 'reflect-metadata';
 

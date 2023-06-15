@@ -1,7 +1,7 @@
 import { Span, SpanStatusCode, trace } from '@opentelemetry/api';
 import { Constants } from '../Constants';
 import { MetadataScanner } from '@nestjs/core/metadata-scanner';
-import { ILogger } from './ILogger';
+import type { ILogger } from './Logger.interface';
 
 export class TraceWrapper {
   static trace<T>(instance: T, logger?: ILogger): T {
